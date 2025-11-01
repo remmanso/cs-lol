@@ -1,4 +1,4 @@
-import { startTransition, useState } from "react";
+import { startTransition, useRef, useState } from "react";
 import { Slider } from "./Slider";
 
 type CanonWaveFrequency =
@@ -22,7 +22,7 @@ const CANON_MINION_UPGRADE_TIME_MS: CanonWaveFrequency[] = [
   { startTime: timeToMS(0, 25, 0), canonFrequency: timeToMS(0, 0, 30) }];
 
 export const useCsCalculator = (minutes: number) => {
-  console.log(minutes);
+
   const calculateCs = (msTime: number) => {
 
     let currentStage = 0;
@@ -54,18 +54,14 @@ export const useCsCalculator = (minutes: number) => {
 
 const gameDuration = 60;
 export const Form = () => {
-  // const [enteredTime, setEnteredTime] = useState<number>(0);
-  // const timeValue = useRef<number>(0);
-  const [sliderValue, setSliderValue] = useState(0);
-  const maxCsCount = useCsCalculator(sliderValue * gameDuration * 60 * 1000 / 100);
-  // const [partieDuration, setPartieDuration] = useState(60);
-  // function handleChange(event: ChangeEvent<HTMLInputElement>): void {
-  //   if (event.target.valueAsDate == null)
-  //     return;
 
-  //   // setEnteredTime(event.target.valueAsDate.getTime());
-  //   // timeValue.current = event.target.valueAsDate.getTime();
-  // }
+  const [sliderValue, setSliderValue] = useState(0);
+
+  const minutes = useRef(0);
+  const seconds = useRef(0);
+
+  const maxCsCount = useCsCalculator(sliderValue * gameDuration * 60 * 1000 / 100);
+
   const setValue = (num: number) => {
     requestAnimationFrame(() => {
       startTransition(() => {
@@ -74,11 +70,13 @@ export const Form = () => {
       })
     });
   };
-  const seconds = Math.round((sliderValue * gameDuration) / 100 % 1 * 60) % 60;
-  const minutes = Math.floor(sliderValue * gameDuration / 100);
+
+  seconds.current = Math.round((sliderValue * gameDuration) / 100 % 1 * 60) % 60;
+  minutes.current = Math.floor(sliderValue * gameDuration / 100);
+  
   return <>
-    <div className="grid gap-2 p-6">
-      <label> Game duration: {minutes === 0 ? "0" : minutes}m {seconds % 60 === 0 ? "" : seconds + "s"}</label>
+    <div className="grid gap-2 p-6 select-none">
+      <label> Game duration: {minutes.current === 0 ? "0" : minutes.current}m {seconds.current % 60 === 0 ? "" : seconds.current + "s"}</label>
       <Slider setValue={setValue} />
       <label> {maxCsCount} cs</label>
     </div>
