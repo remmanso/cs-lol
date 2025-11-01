@@ -1,4 +1,4 @@
-import { ChangeEvent, startTransition, useEffect, useRef, useState } from "react";
+import { startTransition, useState } from "react";
 import { Slider } from "./Slider";
 
 type CanonWaveFrequency =

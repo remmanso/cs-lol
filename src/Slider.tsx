@@ -75,6 +75,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   const handleMouseDown = useRef((mouseEvent: MouseEvent) => {
     if (mouseEvent.button !== 0) return;
     isDragging.current = true;
+    handleValueChange.current(mouseEvent.clientX);
   });
 
   const handleMouseMove = useRef((mouseEvent: MouseEvent) => {
