@@ -1,11 +1,10 @@
-import './App.css';
-import { Form } from './CsCalculator';
+import { CreepCalculator } from './pages/CreepCalculator';
 import { Container } from './Container';
 
 function App() {
   return (
     <Container>
-      <Form />
+      <CreepCalculator />
     </Container>
   );
 }
