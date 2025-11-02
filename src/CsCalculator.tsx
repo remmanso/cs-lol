@@ -65,7 +65,6 @@ export const Form = () => {
   const setValue = (num: number) => {
     requestAnimationFrame(() => {
       startTransition(() => {
-        console.log(num);
         setSliderValue(num);
       })
     });
