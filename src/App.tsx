@@ -1,11 +1,10 @@
 import { CreepCalculator } from './pages/CreepCalculator';
-import { Container } from './Container';
 
 function App() {
   return (
-    <Container>
+    <section className="h-screen w-screen bg-gray-800 font-medium text-white">
       <CreepCalculator />
-    </Container>
+    </section>
   );
 }
 

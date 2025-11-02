@@ -2,8 +2,7 @@ import { startTransition, useRef, useState } from "react";
 import { Slider } from "../components/Slider";
 import { useCsCalculator } from "../hooks/useCsCalculator";
 
-
-const gameDuration = 60;
+const GAME_DURATION = 60;
 export const CreepCalculator = () => {
 
   const [sliderValue, setSliderValue] = useState(0);
@@ -11,7 +10,7 @@ export const CreepCalculator = () => {
   const minutes = useRef(0);
   const seconds = useRef(0);
 
-  const maxCsCount = useCsCalculator(sliderValue * gameDuration * 60 * 1000 / 100);
+  const maxCsCount = useCsCalculator(sliderValue * GAME_DURATION * 60 * 1000 / 100);
 
   const setValue = (num: number) => {
     requestAnimationFrame(() => {
@@ -21,8 +20,8 @@ export const CreepCalculator = () => {
     });
   };
 
-  seconds.current = Math.round((sliderValue * gameDuration) / 100 % 1 * 60) % 60;
-  minutes.current = Math.floor(sliderValue * gameDuration / 100);
+  seconds.current = Math.round((sliderValue * GAME_DURATION) / 100 % 1 * 60) % 60;
+  minutes.current = Math.floor(sliderValue * GAME_DURATION / 100);
   
   return <>
     <div className="grid gap-2 p-6 select-none">
