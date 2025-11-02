@@ -5,4 +5,12 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tailwindcss(), react()],
+  server: {
+    port: 3000,
+    allowedHosts: ["lol.loki-corp.com"],
+  },
+  preview: {
+    port: 3000,
+    allowedHosts: ["lol.loki-corp.com"],
+  },
 });
