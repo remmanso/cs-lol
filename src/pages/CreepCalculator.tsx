@@ -11,11 +11,14 @@ export const CreepCalculator = () => {
   const seconds = useRef(0);
 
   const {
-    totalMinions: maxCsCount,
-    totalGold: maxGold,
-    canonMinionGoldTotal: canonValue,
+    minionsCount: totalMinionCount,
+    minionsGold: incomeFromMinion,
+    canonMinionGoldTotal: incomeFromCanon,
+    passiveIncome,
+    startingGold,
+    totalIncome,
   } = useCsCalculator((sliderValue * GAME_DURATION * 60 * PRECISION) / 100);
-  const { totalMinions: onLaneCount, totalGold: laneGold } = useCsCalculator(
+  const { minionsCount: onLaneCount, minionsGold: laneGold } = useCsCalculator(
     (sliderValue * GAME_DURATION * 60 * PRECISION) / 100 - 30 * PRECISION,
   );
 
@@ -39,15 +42,70 @@ export const CreepCalculator = () => {
           {seconds.current % 60 === 0 ? "" : seconds.current + "s"}
         </label>
         <Slider setValue={setValue} />
-        <div className="m-auto flex w-full gap-2 text-xl">
-          <label className="m-auto">
-            {maxCsCount}cs spawned <b className="text-amber-200">({maxGold}g)</b>
+        <div className="m-auto flex w-full justify-items-center gap-2 text-xl">
+          <label className="mx-auto self-start">
+            <b>{totalMinionCount}</b>cs spawned{" "}
+            <b className="m-auto ml-2 inline-flex items-end gap-1 self-end text-amber-200">
+              {incomeFromMinion}
+              <img src="/public/gold-icon.png" />
+            </b>
           </label>
-          <label className="m-auto">
-            {onLaneCount}cs on lane <b className="text-amber-200">({laneGold}g)</b>
+          <label className="mx-auto self-start">
+            <b>{onLaneCount}</b>cs on lane{" "}
+            <b className="m-auto ml-2 inline-flex items-end gap-1 self-end text-amber-200">
+              {laneGold}
+              <img src="/public/gold-icon.png" />
+            </b>
           </label>
-          <label className="m-auto">
-            Cumul. gold from canon minions : <b className="text-amber-200">{canonValue}g</b>
+          <label className="w-100 m-auto">
+            <h2 className="pb-1 text-2xl">
+              Max Income Breakdown :<br />
+            </h2>
+            <li className="ml-10 list-disc">
+              <div className="grid grid-cols-2">
+                <label>Minions :</label>
+                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                  {incomeFromMinion - incomeFromCanon}
+                  <img src="/public/gold-icon.png" />
+                </b>
+              </div>
+            </li>
+            <li className="ml-10 list-disc">
+              <div className="grid grid-cols-2">
+                Canon minions :
+                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                  {incomeFromCanon}
+                  <img src="/public/gold-icon.png" />
+                </b>
+              </div>
+            </li>
+            <li className="ml-10 list-disc">
+              <div className="grid grid-cols-2">
+                Passive Income :
+                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                  {passiveIncome}
+                  <img src="/public/gold-icon.png" />
+                </b>
+              </div>
+            </li>
+            <li className="ml-10 list-disc">
+              <div className="grid grid-cols-2">
+                Starting Gold :
+                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                  {startingGold}
+                  <img src="/public/gold-icon.png" />
+                </b>
+              </div>
+            </li>
+            <li className="list-none">
+              <div className="grid grid-cols-2">
+                <b>Total :</b>
+                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                  {totalIncome}
+                  <img src="/public/gold-icon.png" />
+                </b>
+              </div>
+            </li>
           </label>
         </div>
         {/* <div className="grid grid-cols-2">
@@ -55,7 +113,7 @@ export const CreepCalculator = () => {
             Add
           </button>
           <ul className="columns">
-            <li>test</li>
+            <li className="ml-10 list-disc">test</li>
             <li>test</li>
             <li>test</li>
             <li>test</li>

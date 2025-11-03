@@ -1,18 +1,11 @@
-import { timeToMs} from "../utils/utils";
-
-type CanonWaveFrequency = {
-  startTime: number;
-  canonFrequency: number;
-  offset?: number;
-};
-
-const WAVE_SPAWN_FREQUENCY_MS = 30 * 1000;
-const CANON_MINION_UPGRADE_TIME_MS: CanonWaveFrequency[] = [
-  { startTime: timeToMs(0, 1, 5), canonFrequency: timeToMs(0, 1, 30), offset: 30 },
-  { startTime: timeToMs(0, 15, 0), canonFrequency: timeToMs(0, 1, 0) },
-  { startTime: timeToMs(0, 25, 0), canonFrequency: timeToMs(0, 0, 30) },
-];
-const WAVE_GOLD_VALUE = 21*3+14*3;
+import {
+  CANON_MINION_UPGRADE_TIME_MS,
+  PASSIVE_GOLD_RATE_MS,
+  STARTING_GOLD_AMOUNT,
+  timeToMs,
+  WAVE_GOLD_VALUE,
+  WAVE_SPAWN_FREQUENCY_MS,
+} from "../utils/utils";
 
 const calculate_canon_value = (elapsedTimeMs: number) =>
   60 +
@@ -27,21 +20,21 @@ export const useCsCalculator = (elapsedTimeMs: number) => {
     let { startTime: currentTimeMs, canonFrequency, offset } = CANON_MINION_UPGRADE_TIME_MS[0];
     let lastCanonTime = currentTimeMs + (offset ?? 0) * 1000; // we offset the first wave,
     let nextStage = getNextSpawnTime();
-    let totalMinions = 0;
-    let totalGold = 0;
+    let minionsCount = 0;
+    let minionsGold = 0; // start with 500 on SR
     let canonMinionGoldTotal = 0;
     let canonValue = 0;
     while (currentTimeMs <= elapsedTimeMs) {
       currentTimeMs += WAVE_SPAWN_FREQUENCY_MS;
-      totalMinions += 6;
-      totalGold += WAVE_GOLD_VALUE;
+      minionsCount += 6;
+      minionsGold += WAVE_GOLD_VALUE;
       if (currentTimeMs - lastCanonTime >= canonFrequency) {
-        totalMinions++;
+        minionsCount++;
         lastCanonTime = currentTimeMs;
 
         canonValue = calculate_canon_value(currentTimeMs);
         canonMinionGoldTotal += canonValue;
-        totalGold += canonValue;
+        minionsGold += canonValue;
       }
 
       if (nextStage && currentTimeMs >= nextStage.startTime) {
@@ -50,7 +43,15 @@ export const useCsCalculator = (elapsedTimeMs: number) => {
         nextStage = getNextSpawnTime();
       }
     }
-    return { totalMinions, totalGold, canonMinionGoldTotal };
+    const passiveIncome = Math.round(Math.max((elapsedTimeMs - timeToMs(0, 1, 40)) * PASSIVE_GOLD_RATE_MS, 0));
+    return {
+      minionsCount,
+      minionsGold,
+      canonMinionGoldTotal,
+      passiveIncome,
+      startingGold: STARTING_GOLD_AMOUNT,
+      totalIncome: STARTING_GOLD_AMOUNT + minionsGold + passiveIncome,
+    };
   };
 
   return calculateCs(elapsedTimeMs);
