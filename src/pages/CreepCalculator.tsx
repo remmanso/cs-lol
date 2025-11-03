@@ -47,14 +47,14 @@ export const CreepCalculator = () => {
             <b>{totalMinionCount}</b>cs spawned{" "}
             <b className="m-auto ml-2 inline-flex items-end gap-1 self-end text-amber-200">
               {incomeFromMinion}
-              <img src="/public/gold-icon.png" />
+              <img src="/gold-icon.png" />
             </b>
           </label>
           <label className="mx-auto self-start">
             <b>{onLaneCount}</b>cs on lane{" "}
             <b className="m-auto ml-2 inline-flex items-end gap-1 self-end text-amber-200">
               {laneGold}
-              <img src="/public/gold-icon.png" />
+              <img src="/gold-icon.png" />
             </b>
           </label>
           <label className="w-100 m-auto">
@@ -66,7 +66,7 @@ export const CreepCalculator = () => {
                 <label>Minions :</label>
                 <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
                   {incomeFromMinion - incomeFromCanon}
-                  <img src="/public/gold-icon.png" />
+                  <img src="/gold-icon.png" />
                 </b>
               </div>
             </li>
@@ -75,7 +75,7 @@ export const CreepCalculator = () => {
                 Canon minions :
                 <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
                   {incomeFromCanon}
-                  <img src="/public/gold-icon.png" />
+                  <img src="/gold-icon.png" />
                 </b>
               </div>
             </li>
@@ -84,7 +84,7 @@ export const CreepCalculator = () => {
                 Passive Income :
                 <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
                   {passiveIncome}
-                  <img src="/public/gold-icon.png" />
+                  <img src="/gold-icon.png" />
                 </b>
               </div>
             </li>
@@ -93,7 +93,7 @@ export const CreepCalculator = () => {
                 Starting Gold :
                 <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
                   {startingGold}
-                  <img src="/public/gold-icon.png" />
+                  <img src="/gold-icon.png" />
                 </b>
               </div>
             </li>
@@ -102,7 +102,7 @@ export const CreepCalculator = () => {
                 <b>Total :</b>
                 <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
                   {totalIncome}
-                  <img src="/public/gold-icon.png" />
+                  <img src="/gold-icon.png" />
                 </b>
               </div>
             </li>
