@@ -1,8 +1,7 @@
 import { useEffect, useRef } from "react";
+import { PRECISION } from "../utils/utils";
 
-const PRECISION = 1000;
 export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
-
   const containerRef = useRef<HTMLElement>(null);
   const slider = useRef<HTMLDivElement>(null);
   const thumbRatio = useRef<number>(0);
@@ -11,26 +10,19 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   const sliderWidth = useRef(0);
   const isDragging = useRef(false);
 
-  const sanitizePosition = (position: number) =>
-    Math.min(
-      Math.max(
-        !isNaN(position) ? position : 0,
-        x.current
-      ),
-      (x.current + width.current)
-    );
+  const sanitizePosition = (position: number) => {
+    return Math.min(Math.max(!isNaN(position) ? position : 0, 0), width.current);
+  };
 
-  const getRatioFromPosition = (position: number) => (position - x.current) * PRECISION / width.current;
+  const getRatioFromPosition = (position: number) => (position * PRECISION) / width.current;
 
   const handleValueChange = useRef((clientX: number) => {
-
     const position = sanitizePosition(clientX);
     thumbRatio.current = getRatioFromPosition(position);
 
-    if (slider.current)
-      slider.current.style.left = position - sliderWidth.current / 2 + "px";
+    if (slider.current) slider.current.style.left = position - sliderWidth.current / 2 + "px";
 
-    setValue?.(thumbRatio.current * 100 / PRECISION);
+    setValue?.((thumbRatio.current * 100) / PRECISION);
   });
 
   const updatePosition = useRef(() => {
@@ -44,8 +36,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
     x.current = newX;
     width.current = newWidth;
 
-    if (newWidth > 0)
-      handleValueChange.current(thumbRatio.current * newWidth / PRECISION + newX);
+    if (newWidth > 0) handleValueChange.current((thumbRatio.current * newWidth) / PRECISION);
   });
 
   useEffect(() => {
@@ -55,7 +46,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
 
     requestAnimationFrame(() => {
       updatePosition.current();
-    })
+    });
 
     document.addEventListener("mouseup", mouseUp);
     document.addEventListener("mouseleave", mouseUp);
@@ -67,41 +58,42 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
       document.removeEventListener("mouseleave", mouseUp);
       document.removeEventListener("mousemove", mouseMove);
       window.removeEventListener("resize", updatePos);
-    }
-  }, [])
+    };
+  }, []);
 
   const handleMouseDown = useRef((mouseEvent: MouseEvent) => {
     if (mouseEvent.button !== 0) return;
     isDragging.current = true;
-    handleValueChange.current(mouseEvent.clientX);
+    handleValueChange.current(mouseEvent.clientX - x.current);
   });
 
   const moveThumb = useRef((mouseEvent: MouseEvent) => {
     if (!isDragging.current || mouseEvent.button !== 0) return;
-    handleValueChange.current(mouseEvent.clientX);
+    handleValueChange.current(mouseEvent.clientX - x.current);
   });
 
   const stopThumb = useRef(() => {
     isDragging.current = false;
-  })
+  });
 
   return (
     <div
       id="slider-container"
-      className="flex shrink overflow-visible items-center h-5 hover:cursor-pointer z-0 p-y-1"
+      className="p-y-1 relative z-0 flex h-5 shrink items-center hover:cursor-pointer"
       onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
       onDragStart={(e) => e.preventDefault()}
       onDrop={(e) => e.preventDefault()}
     >
-      <span className="bg-blue-200 min-h-1 min-w-full rounded-sm shadow-outline"></span>
+      <span className="shadow-outline absolute min-h-1 w-full rounded-sm bg-blue-200"></span>
       <div
         ref={slider}
-        className="hover:cursor-pointer flex items-center absolute z-10"
+        className="relative z-10 flex items-center hover:cursor-pointer"
         onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
         onDragStart={(e) => e.preventDefault()}
         onDrop={(e) => e.preventDefault()}
       >
-        <div className="relative rounded-full h-3.5 w-3.5 drop-shadow-lg border hover:bg-slate-300 bg-slate-200"></div>
+        <div className="relative h-3.5 w-3.5 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400"></div>
       </div>
-    </div >);
-}
+    </div>
+  );
+};
