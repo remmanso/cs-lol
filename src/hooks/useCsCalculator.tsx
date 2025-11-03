@@ -1,4 +1,4 @@
-import { timeToMs, type Time } from "../utils/utils";
+import { timeToMs} from "../utils/utils";
 
 type CanonWaveFrequency = {
   startTime: number;
