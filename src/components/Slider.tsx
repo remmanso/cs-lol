@@ -77,22 +77,24 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   });
 
   return (
-    <div
-      id="slider-container"
-      className="p-y-1 relative z-0 flex h-5 shrink items-center hover:cursor-pointer"
-      onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
-      onDragStart={(e) => e.preventDefault()}
-      onDrop={(e) => e.preventDefault()}
-    >
-      <span className="shadow-outline absolute min-h-1 w-full rounded-sm bg-blue-200"></span>
+    <div className="px-2">
       <div
-        ref={slider}
-        className="relative z-10 flex items-center hover:cursor-pointer"
+        id="slider-container"
+        className="relative flex h-5 shrink items-center hover:cursor-pointer"
         onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
         onDragStart={(e) => e.preventDefault()}
         onDrop={(e) => e.preventDefault()}
       >
-        <div className="relative h-3.5 w-3.5 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400"></div>
+        <span className="shadow-outline absolute left-0 right-0 h-1.5 rounded-sm bg-blue-200"></span>
+        <div
+          ref={slider}
+          className="relative flex items-center hover:cursor-pointer"
+          onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
+          onDragStart={(e) => e.preventDefault()}
+          onDrop={(e) => e.preventDefault()}
+        >
+          <div className="h-4 w-4 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400"></div>
+        </div>
       </div>
     </div>
   );
