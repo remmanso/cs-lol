@@ -78,7 +78,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   });
 
   return (
-    <div tw="px-2">
+    <div tw="px-2 ">
       <div
         id="slider-container"
         tw="relative flex h-5 shrink items-center hover:cursor-pointer"
@@ -86,8 +86,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
         onDragStart={(e) => e.preventDefault()}
         onDrop={(e) => e.preventDefault()}
       >
-        {/* shadow-outline */}
-        <span tw="absolute left-0 right-0 h-1.5 rounded-sm bg-blue-200"></span>
+        <span tw="absolute left-0 right-0 h-1.5 rounded-sm bg-lol-accent shadow"></span>
         <div
           ref={slider}
           tw="relative flex items-center hover:cursor-pointer"
