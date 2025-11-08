@@ -1,19 +1,18 @@
 import { startTransition, useRef, useState } from "react";
+import "twin.macro";
 import { Slider } from "../components/Slider";
 import { useCsCalculator } from "../hooks/useCsCalculator";
 import { PRECISION } from "../utils/utils";
-import "twin.macro";
 import {
+  ContainerFlex,
+  ContainerGrid,
   GameDuration,
   GoldIcon,
-  IncomeBreakDownContainer,
-  IncomeBreakDownItem,
-  IncomeBreakDownListItem,
-  IncomeBreakDownListItemContainer,
-  IncomeBreakDownTitle,
+  IncomeBreakDown,
   MinionGoldCount,
   MinionTile,
 } from "./style";
+import { ListItem } from "../components/ListItem";
 
 const GAME_DURATION = 60;
 export const CreepCalculator = () => {
@@ -47,13 +46,15 @@ export const CreepCalculator = () => {
 
   return (
     <>
-      <div tw="m-auto grid max-w-5xl select-none gap-2 p-2 text-2xl">
+      <ContainerGrid>
         <GameDuration>
           Game duration: {minutes.current === 0 ? "0" : minutes.current}m
           {seconds.current % 60 === 0 ? "" : seconds.current + "s"}
         </GameDuration>
+
         <Slider setValue={setValue} />
-        <div tw="m-auto flex w-full justify-items-center gap-2 text-xl">
+
+        <ContainerFlex>
           <MinionTile>
             <b>{totalMinionCount}</b>cs spawned
             <MinionGoldCount>
@@ -61,6 +62,7 @@ export const CreepCalculator = () => {
               <GoldIcon />
             </MinionGoldCount>
           </MinionTile>
+
           <MinionTile>
             <b>{onLaneCount}</b>cs on lane
             <MinionGoldCount>
@@ -68,77 +70,17 @@ export const CreepCalculator = () => {
               <GoldIcon />
             </MinionGoldCount>
           </MinionTile>
-          <IncomeBreakDownContainer>
-            <IncomeBreakDownTitle>Max Income Breakdown :</IncomeBreakDownTitle>
-            <IncomeBreakDownListItem>
-              <IncomeBreakDownListItemContainer>
-                Minions :
-                <IncomeBreakDownItem>
-                  {incomeFromMinion - incomeFromCanon}
-                  <GoldIcon />
-                </IncomeBreakDownItem>
-              </IncomeBreakDownListItemContainer>
-            </IncomeBreakDownListItem>
-            <IncomeBreakDownListItem>
-              <IncomeBreakDownListItemContainer>
-                Canon minions :
-                <IncomeBreakDownItem>
-                  {incomeFromCanon}
-                  <GoldIcon />
-                </IncomeBreakDownItem>
-              </IncomeBreakDownListItemContainer>
-            </IncomeBreakDownListItem>
-            <IncomeBreakDownListItem>
-              <IncomeBreakDownListItemContainer>
-                Passive gold :
-                <IncomeBreakDownItem>
-                  {passiveIncome}
-                  <GoldIcon />
-                </IncomeBreakDownItem>
-              </IncomeBreakDownListItemContainer>
-            </IncomeBreakDownListItem>
-            <IncomeBreakDownListItem>
-              <IncomeBreakDownListItemContainer>
-                Starting gold :
-                <IncomeBreakDownItem>
-                  {startingGold}
-                  <GoldIcon />
-                </IncomeBreakDownItem>
-              </IncomeBreakDownListItemContainer>
-            </IncomeBreakDownListItem>
-            <li tw="list-none">
-              <IncomeBreakDownListItemContainer>
-                <b>Total :</b>
-                <IncomeBreakDownItem>
-                  {totalIncome}
-                  <GoldIcon />
-                </IncomeBreakDownItem>
-              </IncomeBreakDownListItemContainer>
-            </li>
-          </IncomeBreakDownContainer>
-        </div>
-        {/* <div className="grid grid-cols-2">
-          <button className="m-auto columns-1 rounded bg-blue-400 px-3 pb-1 text-base font-bold hover:bg-blue-500 hover:outline-1 hover:outline-gray-900">
-            Add
-          </button>
-          <ul className="columns">
-            <IncomeBreakDownListItem>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-            <li>test</li>
-          </ul>
-        </div> */}
-      </div>
+
+          <IncomeBreakDown.List>
+            <IncomeBreakDown.Title>Max Income Breakdown :</IncomeBreakDown.Title>
+            <ListItem title="Minions" value={incomeFromMinion - incomeFromCanon} />
+            <ListItem title="Canon minions" value={incomeFromCanon} />
+            <ListItem title="Passive gold" value={passiveIncome} />
+            <ListItem title="Starting gold" value={startingGold} />
+            <ListItem title="Total" value={totalIncome} isTotal />
+          </IncomeBreakDown.List>
+        </ContainerFlex>
+      </ContainerGrid>
     </>
   );
 };
