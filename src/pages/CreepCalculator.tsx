@@ -2,6 +2,18 @@ import { startTransition, useRef, useState } from "react";
 import { Slider } from "../components/Slider";
 import { useCsCalculator } from "../hooks/useCsCalculator";
 import { PRECISION } from "../utils/utils";
+import "twin.macro";
+import {
+  GameDuration,
+  GoldIcon,
+  IncomeBreakDownContainer,
+  IncomeBreakDownItem,
+  IncomeBreakDownListItem,
+  IncomeBreakDownListItemContainer,
+  IncomeBreakDownTitle,
+  MinionGoldCount,
+  MinionTile,
+} from "./style";
 
 const GAME_DURATION = 60;
 export const CreepCalculator = () => {
@@ -35,85 +47,82 @@ export const CreepCalculator = () => {
 
   return (
     <>
-      <div className="m-auto grid min-w-40 max-w-5xl select-none gap-2 p-2 text-2xl">
-        <label>
-          {" "}
-          Game duration: {minutes.current === 0 ? "0" : minutes.current}m{" "}
+      <div tw="m-auto grid max-w-5xl select-none gap-2 p-2 text-2xl">
+        <GameDuration>
+          Game duration: {minutes.current === 0 ? "0" : minutes.current}m
           {seconds.current % 60 === 0 ? "" : seconds.current + "s"}
-        </label>
+        </GameDuration>
         <Slider setValue={setValue} />
-        <div className="m-auto flex w-full justify-items-center gap-2 text-xl">
-          <label className="mx-auto self-start">
-            <b>{totalMinionCount}</b>cs spawned{" "}
-            <b className="m-auto ml-2 inline-flex items-end gap-1 self-end text-amber-200">
+        <div tw="m-auto flex w-full justify-items-center gap-2 text-xl">
+          <MinionTile>
+            <b>{totalMinionCount}</b>cs spawned
+            <MinionGoldCount>
               {incomeFromMinion}
-              <img src="/gold-icon.png" />
-            </b>
-          </label>
-          <label className="mx-auto self-start">
-            <b>{onLaneCount}</b>cs on lane{" "}
-            <b className="m-auto ml-2 inline-flex items-end gap-1 self-end text-amber-200">
+              <GoldIcon />
+            </MinionGoldCount>
+          </MinionTile>
+          <MinionTile>
+            <b>{onLaneCount}</b>cs on lane
+            <MinionGoldCount>
               {laneGold}
-              <img src="/gold-icon.png" />
-            </b>
-          </label>
-          <label className="w-100 m-auto">
-            <h2 className="pb-1 text-2xl">
-              Max Income Breakdown :<br />
-            </h2>
-            <li className="ml-10 list-disc">
-              <div className="grid grid-cols-2">
-                <label>Minions :</label>
-                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+              <GoldIcon />
+            </MinionGoldCount>
+          </MinionTile>
+          <IncomeBreakDownContainer>
+            <IncomeBreakDownTitle>Max Income Breakdown :</IncomeBreakDownTitle>
+            <IncomeBreakDownListItem>
+              <IncomeBreakDownListItemContainer>
+                Minions :
+                <IncomeBreakDownItem>
                   {incomeFromMinion - incomeFromCanon}
-                  <img src="/gold-icon.png" />
-                </b>
-              </div>
-            </li>
-            <li className="ml-10 list-disc">
-              <div className="grid grid-cols-2">
+                  <GoldIcon />
+                </IncomeBreakDownItem>
+              </IncomeBreakDownListItemContainer>
+            </IncomeBreakDownListItem>
+            <IncomeBreakDownListItem>
+              <IncomeBreakDownListItemContainer>
                 Canon minions :
-                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                <IncomeBreakDownItem>
                   {incomeFromCanon}
-                  <img src="/gold-icon.png" />
-                </b>
-              </div>
-            </li>
-            <li className="ml-10 list-disc">
-              <div className="grid grid-cols-2">
-                Passive Income :
-                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                  <GoldIcon />
+                </IncomeBreakDownItem>
+              </IncomeBreakDownListItemContainer>
+            </IncomeBreakDownListItem>
+            <IncomeBreakDownListItem>
+              <IncomeBreakDownListItemContainer>
+                Passive gold :
+                <IncomeBreakDownItem>
                   {passiveIncome}
-                  <img src="/gold-icon.png" />
-                </b>
-              </div>
-            </li>
-            <li className="ml-10 list-disc">
-              <div className="grid grid-cols-2">
-                Starting Gold :
-                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                  <GoldIcon />
+                </IncomeBreakDownItem>
+              </IncomeBreakDownListItemContainer>
+            </IncomeBreakDownListItem>
+            <IncomeBreakDownListItem>
+              <IncomeBreakDownListItemContainer>
+                Starting gold :
+                <IncomeBreakDownItem>
                   {startingGold}
-                  <img src="/gold-icon.png" />
-                </b>
-              </div>
-            </li>
-            <li className="list-none">
-              <div className="grid grid-cols-2">
+                  <GoldIcon />
+                </IncomeBreakDownItem>
+              </IncomeBreakDownListItemContainer>
+            </IncomeBreakDownListItem>
+            <li tw="list-none">
+              <IncomeBreakDownListItemContainer>
                 <b>Total :</b>
-                <b className="inline-flex items-end gap-1 self-end justify-self-end text-amber-200">
+                <IncomeBreakDownItem>
                   {totalIncome}
-                  <img src="/gold-icon.png" />
-                </b>
-              </div>
+                  <GoldIcon />
+                </IncomeBreakDownItem>
+              </IncomeBreakDownListItemContainer>
             </li>
-          </label>
+          </IncomeBreakDownContainer>
         </div>
         {/* <div className="grid grid-cols-2">
           <button className="m-auto columns-1 rounded bg-blue-400 px-3 pb-1 text-base font-bold hover:bg-blue-500 hover:outline-1 hover:outline-gray-900">
             Add
           </button>
           <ul className="columns">
-            <li className="ml-10 list-disc">test</li>
+            <IncomeBreakDownListItem>test</li>
             <li>test</li>
             <li>test</li>
             <li>test</li>

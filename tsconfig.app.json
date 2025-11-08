@@ -13,6 +13,7 @@
     "types": [
       "vite/client"
     ],
+    "composite": true,
     "skipLibCheck": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -30,6 +31,7 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "src"
+    "src",
+    "types"
   ]
 }

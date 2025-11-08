@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { PRECISION } from "../utils/utils";
+import "twin.macro";
 
 export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   const containerRef = useRef<HTMLElement>(null);
@@ -77,23 +78,24 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   });
 
   return (
-    <div className="px-2">
+    <div tw="px-2">
       <div
         id="slider-container"
-        className="relative flex h-5 shrink items-center hover:cursor-pointer"
+        tw="relative flex h-5 shrink items-center hover:cursor-pointer"
         onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
         onDragStart={(e) => e.preventDefault()}
         onDrop={(e) => e.preventDefault()}
       >
-        <span className="shadow-outline absolute left-0 right-0 h-1.5 rounded-sm bg-blue-200"></span>
+        {/* shadow-outline */}
+        <span tw="absolute left-0 right-0 h-1.5 rounded-sm bg-blue-200"></span>
         <div
           ref={slider}
-          className="relative flex items-center hover:cursor-pointer"
+          tw="relative flex items-center hover:cursor-pointer"
           onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
           onDragStart={(e) => e.preventDefault()}
           onDrop={(e) => e.preventDefault()}
         >
-          <div className="h-4 w-4 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400"></div>
+          <div tw="h-4 w-4 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400"></div>
         </div>
       </div>
     </div>
