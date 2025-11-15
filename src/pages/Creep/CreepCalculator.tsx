@@ -1,8 +1,10 @@
 import { startTransition, useRef, useState } from "react";
 import "twin.macro";
-import { Slider } from "../components/Slider";
-import { useCsCalculator } from "../hooks/useCsCalculator";
-import { PRECISION } from "../utils/utils";
+import { Slider } from "../../components/Slider";
+import { useCsCalculator } from "../../hooks/useCsCalculator";
+import { PRECISION } from "../../utils/utils";
+
+import { ListItem } from "../../components/ListItem";
 import {
   ContainerFlex,
   ContainerGrid,
@@ -12,7 +14,6 @@ import {
   MinionGoldCount,
   MinionTile,
 } from "./style";
-import { ListItem } from "../components/ListItem";
 
 const GAME_DURATION = 60;
 export const CreepCalculator = () => {

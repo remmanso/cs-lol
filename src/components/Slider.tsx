@@ -41,39 +41,51 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   });
 
   useEffect(() => {
-    const mouseUp = stopThumb.current;
-    const mouseMove = moveThumb.current;
+    const stopDraging = stopDraggingThumb.current;
+    const dragThumb = moveThumb.current;
     const updatePos = updatePosition.current;
 
     requestAnimationFrame(() => {
       updatePosition.current();
     });
 
-    document.addEventListener("mouseup", mouseUp);
-    document.addEventListener("mouseleave", mouseUp);
-    document.addEventListener("mousemove", mouseMove);
+    document.addEventListener("mouseup", stopDraging);
+    document.addEventListener("mouseleave", stopDraging);
+    document.addEventListener("mousemove", dragThumb);
+    document.addEventListener("pointerup", stopDraging);
+    document.addEventListener("pointerleave", stopDraging);
+    document.addEventListener("pointermove", dragThumb);
+    document.addEventListener("focusout", stopDraging);
     window.addEventListener("resize", updatePos);
 
     return () => {
-      document.removeEventListener("mouseup", mouseUp);
-      document.removeEventListener("mouseleave", mouseUp);
-      document.removeEventListener("mousemove", mouseMove);
+      document.removeEventListener("pointerup", stopDraging);
+      document.removeEventListener("pointerleave", stopDraging);
+      document.removeEventListener("pointermove", dragThumb);
+      document.removeEventListener("mouseup", stopDraging);
+      document.removeEventListener("mouseleave", stopDraging);
+      document.removeEventListener("focusout", stopDraging);
+      document.removeEventListener("mousemove", dragThumb);
       window.removeEventListener("resize", updatePos);
     };
   }, []);
 
-  const handleMouseDown = useRef((mouseEvent: MouseEvent) => {
-    if (mouseEvent.button !== 0) return;
+  const handlePointerDown = useRef((mouseEvent: PointerEvent | DragEvent | MouseEvent) => {
+    if (mouseEvent instanceof PointerEvent && mouseEvent.pointerType === "mouse" && mouseEvent.button !== 0) return;
     isDragging.current = true;
-    handleValueChange.current(mouseEvent.clientX - x.current);
+    handleValueChange.current(mouseEvent.x - x.current);
   });
 
-  const moveThumb = useRef((mouseEvent: MouseEvent) => {
-    if (!isDragging.current || mouseEvent.button !== 0) return;
-    handleValueChange.current(mouseEvent.clientX - x.current);
+  const moveThumb = useRef((mouseEvent: PointerEvent | DragEvent | MouseEvent) => {
+    if (
+      !isDragging.current ||
+      (mouseEvent instanceof PointerEvent && mouseEvent.pointerType === "mouse" && mouseEvent.button !== 0)
+    )
+      return;
+    handleValueChange.current(mouseEvent.x - x.current);
   });
 
-  const stopThumb = useRef(() => {
+  const stopDraggingThumb = useRef(() => {
     isDragging.current = false;
   });
 
@@ -82,17 +94,19 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
       <div
         id="slider-container"
         tw="relative flex h-5 shrink items-center hover:cursor-pointer"
-        onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
-        onDragStart={(e) => e.preventDefault()}
-        onDrop={(e) => e.preventDefault()}
+        onPointerDown={(e) => handlePointerDown.current(e.nativeEvent)}
+        // onMouseDown={(e) => handlePointerDown.current(e.nativeEvent)}
+        onDragStart={(e) => handlePointerDown.current(e.nativeEvent)}
+        onDrop={(e) => stopDraggingThumb.current(e.nativeEvent)}
       >
         <span tw="absolute left-0 right-0 h-1.5 rounded-sm bg-lol-accent shadow"></span>
         <div
           ref={slider}
           tw="relative flex items-center hover:cursor-pointer"
-          onMouseDown={(e) => handleMouseDown.current(e.nativeEvent)}
-          onDragStart={(e) => e.preventDefault()}
-          onDrop={(e) => e.preventDefault()}
+          // onMouseDown={(e) => handlePointerDown.current(e.nativeEvent)}
+          onPointerDown={(e) => handlePointerDown.current(e.nativeEvent)}
+          onDragStart={(e) => handlePointerDown.current(e.nativeEvent)}
+          onDrop={(e) => stopDraggingThumb.current(e.nativeEvent)}
         >
           <div tw="h-4 w-4 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400"></div>
         </div>

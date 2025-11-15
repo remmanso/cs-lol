@@ -1,4 +1,4 @@
-import { GoldIcon, IncomeBreakDown } from "../pages/style";
+import { GoldIcon, IncomeBreakDown } from "../pages/Creep/style";
 
 export const ListItem = ({
   title,

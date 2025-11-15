@@ -1,3 +1,5 @@
+import { QueryClient } from "@tanstack/react-query";
+
 export type Time = {
   h: number;
   m: number;
@@ -28,3 +30,12 @@ export const CANON_MINION_UPGRADE_TIME_MS: CanonWaveFrequency[] = [
 ];
 export const PASSIVE_GOLD_RATE_MS = 20.4 / (10 * 1000); // rate is 20.4 every 10s
 export const WAVE_GOLD_VALUE = 21 * 3 + 14 * 3;
+
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+});

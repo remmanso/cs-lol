@@ -9,7 +9,16 @@
       "request": "launch",
       "type": "msedge",
       "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}"
+      "webRoot": "${workspaceFolder}",
+      "userDataDir": "C:/Users/Grim/AppData/Local/Microsoft/Edge/User Data/Profile 1"
     },
+    {
+      "name": "Launch Chrome",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}",
+      "userDataDir": "C:/Users/Grim/AppData/Local/Google/Chrome/User Data/Default"
+    }
   ]
 }
