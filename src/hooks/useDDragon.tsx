@@ -1,4 +1,4 @@
-import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 type ddChampion = {
   version: string;

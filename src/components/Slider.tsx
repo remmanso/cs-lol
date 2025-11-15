@@ -97,7 +97,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
         onPointerDown={(e) => handlePointerDown.current(e.nativeEvent)}
         // onMouseDown={(e) => handlePointerDown.current(e.nativeEvent)}
         onDragStart={(e) => handlePointerDown.current(e.nativeEvent)}
-        onDrop={(e) => stopDraggingThumb.current(e.nativeEvent)}
+        onDrop={stopDraggingThumb.current}
       >
         <span tw="absolute left-0 right-0 h-1.5 rounded-sm bg-lol-accent shadow"></span>
         <div
@@ -106,7 +106,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
           // onMouseDown={(e) => handlePointerDown.current(e.nativeEvent)}
           onPointerDown={(e) => handlePointerDown.current(e.nativeEvent)}
           onDragStart={(e) => handlePointerDown.current(e.nativeEvent)}
-          onDrop={(e) => stopDraggingThumb.current(e.nativeEvent)}
+          onDrop={stopDraggingThumb.current}
         >
           <div tw="h-4 w-4 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400"></div>
         </div>
