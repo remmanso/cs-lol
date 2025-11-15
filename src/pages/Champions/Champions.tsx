@@ -1,6 +1,6 @@
 import { Suspense, useCallback, useMemo, useState, type ChangeEvent } from "react";
+import {} from "twin.macro";
 import { useChampionsQuery } from "../../hooks/useDDragon";
-import tw from "twin.macro";
 
 export const Champions = () => {
   const [championSearched, setChampionSearched] = useState("");
