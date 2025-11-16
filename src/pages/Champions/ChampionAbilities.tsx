@@ -11,7 +11,13 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
       <div tw="grid grid-cols-4 gap-2 place-content-center text-sm">
         {query.data.data[champ.id].spells.map((s) => (
           <div key={s.id + champ.id} tw="grid [grid-template-columns: auto 1fr] gap-2 place-items-center m-auto">
-            <img src={CHAMPION_IMG_URL(s.image.full, champ.version)} tw="rounded-md" height={45} width={45} />
+            <img
+              src={CHAMPION_IMG_URL(s.image.full, champ.version)}
+              tw="rounded-md"
+              height={45}
+              width={45}
+              title={s.description}
+            />
             <div tw="grid items-center">
               <div tw="flex gap-2 items-baseline">
                 <label tw="font-bold text-base">{s.id.substring(s.id.length - 1)}</label>
