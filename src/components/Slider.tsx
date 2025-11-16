@@ -24,8 +24,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
     thumbRatio.current = getRatioFromPosition(position, width);
 
     if (slider.current) slider.current.style.left = position - sliderWidth / 2 + "px";
-
-    setValue?.((thumbRatio.current * 100) / PRECISION);
+    if (!isResize) setValue?.((thumbRatio.current * 100) / PRECISION);
   });
 
   const updatePosition = useRef(() => {
@@ -82,23 +81,17 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   });
 
   return (
-    <div tw="px-1">
+    <div tw="px-1 touch-none">
       <div
         id="slider-container"
         tw="relative flex h-5 shrink items-center hover:cursor-pointer"
         onPointerDown={(e) => handlePointerDown.current(e.nativeEvent)}
-        // onMouseDown={(e) => handlePointerDown.current(e.nativeEvent)}
-        onDragStart={(e) => handlePointerDown.current(e.nativeEvent)}
-        onDrop={stopDraggingThumb.current}
       >
         <span tw="absolute left-0 right-0 h-1.5 rounded-sm bg-lol-accent shadow"></span>
         <div
           ref={slider}
           tw="relative flex items-center hover:cursor-pointer"
-          // onMouseDown={(e) => handlePointerDown.current(e.nativeEvent)}
           onPointerDown={(e) => handlePointerDown.current(e.nativeEvent)}
-          onDragStart={(e) => handlePointerDown.current(e.nativeEvent)}
-          onDrop={stopDraggingThumb.current}
         >
           <div tw="h-4 w-4 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400"></div>
         </div>
