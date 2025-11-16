@@ -29,6 +29,7 @@ export const Champions = () => {
   return (
     <div tw="mt-2 p-4">
       <Suspense fallback={<>Loading...</>}>
+        <h2 tw="font-medium text-xl md:text-2xl mb-3">Champions :</h2>
         <div tw="grid grid-cols-2 gap-3 grid-rows-1">
           <label tw="row-start-1 col-start-2 justify-self-end">
             Patch version : {lastVersion.data?.[0] ?? "No version"}
@@ -65,18 +66,17 @@ export const Champions = () => {
             </datalist>
           </div>
           <div tw="col-span-full">
-            <h2 tw="font-medium text-xl mb-3">Champions :</h2>
             <ul tw="grid gap-1">
               {champions
                 .filter((c) => c.name.toLowerCase().includes(championSearched.toLowerCase()))
                 .map(
                   (c) =>
                     c && (
-                      <li key={c.id} tw="border-2 rounded p-2">
+                      <li key={c.id} tw="border-2 rounded p-2 border-white/30">
                         <div tw="grid [grid-template-columns: auto 1fr] gap-3 items-center">
-                          <img src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
+                          <img tw="" src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
                           <div>
-                            <b>{c.name}</b> (<i tw="text-xs">{c.title}</i>) - {c.tags.join(", ")}
+                            <b tw="text-lg">{c.name}</b> <i tw="text-xs">({c.title})</i> - {c.tags.join(", ")}
                           </div>
                           <div tw="col-span-full row-start-2">{c.blurb}</div>
                           {/* <div tw="col-span-2 row-start-3 grid grid-cols-3">
