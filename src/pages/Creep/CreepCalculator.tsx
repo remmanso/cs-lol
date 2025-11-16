@@ -6,7 +6,7 @@ import { PRECISION } from "../../utils/utils";
 
 import { ListItem } from "../../components/ListItem";
 import {
-  ContainerFlex,
+  Container,
   ContainerGrid,
   GameDuration,
   GoldIcon,
@@ -55,9 +55,11 @@ export const CreepCalculator = () => {
 
         <Slider setValue={setValue} />
 
-        <ContainerFlex>
+        <Container>
           <MinionTile>
-            <b>{totalMinionCount}</b>cs spawned
+            <span>
+              <b>{totalMinionCount}</b>cs spawned
+            </span>
             <MinionGoldCount>
               {incomeFromMinion}
               <GoldIcon />
@@ -65,7 +67,9 @@ export const CreepCalculator = () => {
           </MinionTile>
 
           <MinionTile>
-            <b>{onLaneCount}</b>cs on lane
+            <span>
+              <b>{onLaneCount}</b>cs on lane
+            </span>
             <MinionGoldCount>
               {laneGold}
               <GoldIcon />
@@ -80,7 +84,7 @@ export const CreepCalculator = () => {
             <ListItem title="Starting gold" value={startingGold} />
             <ListItem title="Total" value={totalIncome} isTotal />
           </IncomeBreakDown.List>
-        </ContainerFlex>
+        </Container>
       </ContainerGrid>
     </>
   );
