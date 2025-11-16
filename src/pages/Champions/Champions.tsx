@@ -76,7 +76,11 @@ export const Champions = () => {
               .map(
                 (c) =>
                   c && (
-                    <li key={c.id} tw="border-2 rounded p-2 border-white/30" onClick={() => setChampionSelected(c)}>
+                    <li
+                      key={c.id}
+                      tw="border-2 rounded p-2 border-white/30 hover:bg-lol-accent/20 cursor-pointer"
+                      onClick={() => setChampionSelected(c)}
+                    >
                       <div tw="grid [grid-template-columns: auto 1fr] gap-3 items-center">
                         <img tw="" src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
                         <div>
