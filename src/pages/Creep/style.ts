@@ -6,14 +6,16 @@ export const Container = tw.div`m-auto grid [grid-template-rows: auto 1fr] md:[g
 export const MinionTile = tw.div`grid grid-cols-2 row-span-1`;
 export const GameDuration = tw.div``;
 
-export const MinionGoldCount = tw.div`ml-2 inline-flex items-end gap-1  justify-self-end  text-lol-gold`;
+export const MinionGoldCount = tw.div`ml-2 flex gap-1 justify-self-end text-lol-gold`;
 
-export const GoldIcon = styled.img.attrs({ src: "gold-icon.png", title: "gold" })``;
+export const GoldIcon = styled.img.attrs({ src: "gold-icon.png", title: "gold" })(() => [
+  tw`[height: 11px] [width: 11px] self-end mb-1`,
+]);
 
 export const IncomeBreakDown = {
   List: tw.ul`row-span-2`,
   Title: tw.h2`pb-1 md:text-xl`,
-  Value: tw.div`inline-flex items-end gap-1 text-lol-gold justify-self-end ml-4`,
+  Value: tw.div`inline-flex gap-1 text-lol-gold justify-self-end ml-4`,
   ListContainer: tw.span`grid [grid-template-columns: auto 1fr]`,
   ListItem: tw.li`ml-10 [list-style-type: "- "] [text-indent: 5px]`,
   NoListItem: tw.li`list-none w-full`,
