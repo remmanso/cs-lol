@@ -1,5 +1,5 @@
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { API_VERSION_FALLBACK, ChampionsQueryUID, LastApiVersionQueryUID } from "utils/constants";
+import { useQuery } from "@tanstack/react-query";
+import { LastApiVersionQueryUID, ChampionsQueryUID, API_VERSION_FALLBACK } from "../utils/constants";
 
 type ddChampion = {
   version: string;
