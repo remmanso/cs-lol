@@ -3,14 +3,17 @@ import { Champions } from "./pages/Champions/Champions";
 import { CreepCalculator } from "./pages/Creep/CreepCalculator";
 import { Container } from "./styles/style";
 import { queryClient } from "./utils/utils";
+import { ErrorBoundary } from "react-error-boundary";
 
 function App() {
   return (
     <Container>
-      <QueryClientProvider client={queryClient}>
-        <CreepCalculator />
-        <Champions />
-      </QueryClientProvider>
+      <ErrorBoundary fallback={<p>⚠️Oups! Something went wrong...</p>}>
+        <QueryClientProvider client={queryClient}>
+          <CreepCalculator />
+          <Champions />
+        </QueryClientProvider>
+      </ErrorBoundary>
     </Container>
   );
 }

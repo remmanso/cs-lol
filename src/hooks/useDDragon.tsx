@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { API_VERSION_FALLBACK, ChampionsQueryUID, LastApiVersionQueryUID } from "utils/constants";
 
 type ddChampion = {
   version: string;
@@ -54,11 +55,7 @@ type ddChampionsQuery = {
   data: Record<string, ddChampion>;
 };
 
-const ChampionsQueryUID = "champions/list";
-const LastApiVersionQueryUID = "api/last/version";
-
 // const errorLog = () => console.error("unable to get last api version, defaults to 15.22.1");
-
 export const useChampionsQuery = () => {
   const getLastVersion = useQuery<string[]>({
     queryKey: [LastApiVersionQueryUID],
@@ -73,7 +70,7 @@ export const useChampionsQuery = () => {
     queryKey: [ChampionsQueryUID],
     queryFn: () =>
       fetch(
-        `https://ddragon.leagueoflegends.com/cdn/${getLastVersion.data?.[0] ?? "15.22.1"}/data/en_US/champion.json`,
+        `https://ddragon.leagueoflegends.com/cdn/${getLastVersion.data?.[0] ?? API_VERSION_FALLBACK}/data/en_US/champion.json`,
       ).then((r) => r.json()),
     enabled: Boolean(getLastVersion.isFetched && getLastVersion.data?.[0]),
   });
@@ -83,3 +80,17 @@ export const useChampionsQuery = () => {
     champions: championsQuery,
   };
 };
+
+// export const useAbilitiesQuery = (key: string, version: string) => {
+//   const championAbilitiesQuery = useSuspenseQuery<ddChampionsQuery>({
+//     queryKey: [ChampionsQueryUID],
+//     queryFn: () =>
+//       fetch(
+//         `https://ddragon.leagueoflegends.com/cdn/${version ?? API_VERSION_FALLBACK}/data/en_US/champion/${key}.json`,
+//       ).then((r) => r.json()),
+//   });
+//   return {
+//     lastVersion: getLastVersion,
+//     champions: championsQuery,
+//   };
+// };
