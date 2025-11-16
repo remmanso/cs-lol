@@ -76,7 +76,7 @@ export const Champions = () => {
                         <div tw="grid [grid-template-columns: auto 1fr] gap-3 items-center">
                           <img src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
                           <div>
-                            <b>{c.name}</b> (<i>{c.title}</i>) - {c.tags.join(", ")}
+                            <b>{c.name}</b> (<i tw="text-xs">{c.title}</i>) - {c.tags.join(", ")}
                           </div>
                           <div tw="col-span-full row-start-2">{c.blurb}</div>
                           {/* <div tw="col-span-2 row-start-3 grid grid-cols-3">
