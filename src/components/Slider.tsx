@@ -1,43 +1,38 @@
 import { useEffect, useRef } from "react";
-import { PRECISION } from "../utils/utils";
 import "twin.macro";
+import { PRECISION } from "../utils/utils";
+
+const sanitizePosition = (position: number, width: number) => {
+  return Math.min(Math.max(!isNaN(position) ? position : 0, 0), width);
+};
+
+const getRatioFromPosition = (position: number, width: number) => (position * PRECISION) / width;
 
 export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   const containerRef = useRef<HTMLElement>(null);
   const slider = useRef<HTMLDivElement>(null);
   const thumbRatio = useRef<number>(0);
-  const x = useRef(0);
-  const width = useRef(0);
-  const sliderWidth = useRef(0);
   const isDragging = useRef(false);
 
-  const sanitizePosition = (position: number) => {
-    return Math.min(Math.max(!isNaN(position) ? position : 0, 0), width.current);
-  };
+  const handleValueChange = useRef((clientX: number, isResize?: boolean) => {
+    if (!containerRef.current || !slider.current) return;
 
-  const getRatioFromPosition = (position: number) => (position * PRECISION) / width.current;
+    const { x, width } = containerRef.current.getBoundingClientRect();
+    const { width: sliderWidth } = slider.current.getBoundingClientRect();
+    const position = sanitizePosition(clientX - (isResize ? 0 : x), width);
 
-  const handleValueChange = useRef((clientX: number) => {
-    const position = sanitizePosition(clientX);
-    thumbRatio.current = getRatioFromPosition(position);
+    thumbRatio.current = getRatioFromPosition(position, width);
 
-    if (slider.current) slider.current.style.left = position - sliderWidth.current / 2 + "px";
+    if (slider.current) slider.current.style.left = position - sliderWidth / 2 + "px";
 
     setValue?.((thumbRatio.current * 100) / PRECISION);
   });
 
   const updatePosition = useRef(() => {
-    containerRef.current = document.getElementById("slider-container");
-    if (!containerRef.current) return;
+    if (!containerRef.current || !slider.current) return;
 
-    const { x: newX, width: newWidth } = containerRef.current.getBoundingClientRect();
-    const { width: newSliderWidth } = slider.current?.getBoundingClientRect() ?? { width: 0 };
-
-    sliderWidth.current = newSliderWidth;
-    x.current = newX;
-    width.current = newWidth;
-
-    if (newWidth > 0) handleValueChange.current((thumbRatio.current * newWidth) / PRECISION);
+    const { width } = containerRef.current.getBoundingClientRect();
+    handleValueChange.current((thumbRatio.current * width) / PRECISION, true);
   });
 
   useEffect(() => {
@@ -45,10 +40,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
     const dragThumb = moveThumb.current;
     const updatePos = updatePosition.current;
 
-    requestAnimationFrame(() => {
-      updatePosition.current();
-    });
-
+    containerRef.current = document.getElementById("slider-container");
     document.addEventListener("mouseup", stopDraging);
     document.addEventListener("mouseleave", stopDraging);
     document.addEventListener("mousemove", dragThumb);
@@ -73,7 +65,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   const handlePointerDown = useRef((mouseEvent: PointerEvent | DragEvent | MouseEvent) => {
     if (mouseEvent instanceof PointerEvent && mouseEvent.pointerType === "mouse" && mouseEvent.button !== 0) return;
     isDragging.current = true;
-    handleValueChange.current(mouseEvent.x - x.current);
+    handleValueChange.current(mouseEvent.x);
   });
 
   const moveThumb = useRef((mouseEvent: PointerEvent | DragEvent | MouseEvent) => {
@@ -82,7 +74,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
       (mouseEvent instanceof PointerEvent && mouseEvent.pointerType === "mouse" && mouseEvent.button !== 0)
     )
       return;
-    handleValueChange.current(mouseEvent.x - x.current);
+    handleValueChange.current(mouseEvent.x);
   });
 
   const stopDraggingThumb = useRef(() => {
@@ -90,7 +82,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
   });
 
   return (
-    <div tw="px-2 ">
+    <div tw="px-1">
       <div
         id="slider-container"
         tw="relative flex h-5 shrink items-center hover:cursor-pointer"
