@@ -38,7 +38,7 @@ export const Champions = () => {
             <input
               type="text"
               // list="champions"
-              tw="inline-flex justify-center text-lol-client-bg p-1 font-bold text-base outline-lol-client-bg rounded-md relative"
+              tw="inline-flex justify-center text-lol-client-bg p-1 font-bold text-base outline-lol-client-bg rounded-md relative px-2 focus:accent-lol-accent"
               id="search-champions"
               value={championSearched}
               onChange={handleChampion}
