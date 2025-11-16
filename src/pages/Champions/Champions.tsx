@@ -2,12 +2,15 @@ import { Suspense, useCallback, useMemo, useState, type ChangeEvent } from "reac
 import {} from "twin.macro";
 import { useChampionsQuery } from "../../hooks/useDDragon";
 import SvgIcon from "../../components/SvgIcon";
+import { ddChampion } from "../../utils/ddTypes";
+import { ChampionAbilities } from "./ChampionAbilities";
 
 const championImgSrc = (imgPath: string, patch: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${patch}/img/champion/${imgPath}`;
 
 export const Champions = () => {
   const [championSearched, setChampionSearched] = useState<string>("");
+  const [championSelected, setChampionSelected] = useState<ddChampion | null>(null);
   // const [championsTags, setChampionsTags] = useState<string[]>();
   const { champions: championsData, lastVersion } = useChampionsQuery();
 
@@ -65,6 +68,12 @@ export const Champions = () => {
               ))}
             </datalist>
           </div>
+          {championSelected ?
+            <div tw="col-span-2">
+              <ChampionAbilities champ={championSelected}></ChampionAbilities>
+            </div>
+          : <></>}
+
           <div tw="col-span-full">
             <ul tw="grid gap-1">
               {champions
@@ -72,7 +81,7 @@ export const Champions = () => {
                 .map(
                   (c) =>
                     c && (
-                      <li key={c.id} tw="border-2 rounded p-2 border-white/30">
+                      <li key={c.id} tw="border-2 rounded p-2 border-white/30" onClick={() => setChampionSelected(c)}>
                         <div tw="grid [grid-template-columns: auto 1fr] gap-3 items-center">
                           <img tw="" src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
                           <div>

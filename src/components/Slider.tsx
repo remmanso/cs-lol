@@ -19,11 +19,12 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
 
     const { x, width } = containerRef.current.getBoundingClientRect();
     const { width: sliderWidth } = slider.current.getBoundingClientRect();
-    const position = sanitizePosition(clientX - (isResize ? 0 : x), width);
 
+    const position = sanitizePosition(clientX - (isResize ? 0 : x), width);
     thumbRatio.current = getRatioFromPosition(position, width);
 
-    if (slider.current) slider.current.style.left = position - sliderWidth / 2 + "px";
+    slider.current.style.left = position - sliderWidth / 2 + "px";
+
     if (!isResize) setValue?.((thumbRatio.current * 100) / PRECISION);
   });
 
@@ -40,6 +41,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
     const updatePos = updatePosition.current;
 
     containerRef.current = document.getElementById("slider-container");
+
     document.addEventListener("mouseup", stopDraging);
     document.addEventListener("mouseleave", stopDraging);
     document.addEventListener("mousemove", dragThumb);
