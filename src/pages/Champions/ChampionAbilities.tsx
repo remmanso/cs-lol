@@ -3,13 +3,15 @@ import { useAbilitiesQuery } from "../../hooks/useDDragon";
 import { CHAMPION_IMG_URL, ddChampion } from "../../utils/ddTypes";
 import {} from "twin.macro";
 
+const spellsName = ["Q", "W", "E", "R"];
+
 export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
   const query = useAbilitiesQuery(champ.id, champ.version);
 
   return (
     <Suspense>
       <div tw="grid grid-cols-4 gap-2 place-content-center text-sm">
-        {query.data.data[champ.id].spells.map((s) => (
+        {query.data.data[champ.id].spells.map((s, i) => (
           <div key={s.id + champ.id} tw="grid [grid-template-columns: auto 1fr] gap-2 place-items-center m-auto">
             <img
               src={CHAMPION_IMG_URL(s.image.full, champ.version)}
@@ -20,7 +22,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
             />
             <div tw="grid items-center">
               <div tw="flex gap-2 items-baseline">
-                <label tw="font-bold text-base">{s.id.substring(s.id.length - 1)}</label>
+                <label tw="font-bold text-base">{i < spellsName.length ? spellsName[i] : "more spells ?"}</label>
                 <label tw="text-xs">{s.name}</label>
               </div>
               <label>Cooldown(s): {s.cooldownBurn}</label>
