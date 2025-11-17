@@ -9,6 +9,9 @@ module.exports = {
         "lol-accent": "#117b8b",
         "lol-gray": "#1a1e31",
       },
+      screens: {
+        xs: "20rem",
+      },
     },
   },
   plugins: [],

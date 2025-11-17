@@ -11,7 +11,6 @@ const championImgSrc = (imgPath: string, patch: string) =>
 export const Champions = () => {
   const [championSearched, setChampionSearched] = useState<string>("");
   const [championSelected, setChampionSelected] = useState<ddChampion | null>(null);
-  // const [championsTags, setChampionsTags] = useState<string[]>();
   const { champions: championsData, lastVersion } = useChampionsQuery();
 
   const champions = useMemo(() => {
@@ -24,11 +23,6 @@ export const Champions = () => {
     setChampionSearched((prev) => e.target.value ?? prev);
   }, []);
 
-  // const handleSelect = () => {
-  //   if (!championSearched) return;
-  //   setChampionsTags((prev) => (!prev ? [championSearched] : [...prev, championSearched]));
-  //   setChampionSearched("");
-  // };
   return (
     <div tw="mt-2 p-4">
       <h2 tw="font-medium text-xl md:text-2xl mb-3">Champions :</h2>
@@ -40,20 +34,11 @@ export const Champions = () => {
         <div tw="col-span-2 grid grid-cols-1 relative">
           <input
             type="text"
-            // list="champions"
             tw="inline-flex justify-center text-lol-client-bg p-1 font-bold text-base outline-lol-client-bg rounded-md relative px-2 focus:accent-lol-accent"
             id="search-champions"
             value={championSearched}
             onChange={handleChampion}
-            // onSelect={handleSelect}
           />
-          {/* <div>
-              {championsTags?.map((o) => (
-                <span key={"selected-champs-" + o} tw="border-red-700">
-                  {o}
-                </span>
-              ))}
-              </div> */}
           <button id="reset" tw="h-full justify-self-end absolute m-auto mr-2" onClick={() => setChampionSearched("")}>
             <SvgIcon name="close" tw="[width: 20px] [height: 20px] text-lol-client-bg/75 hover:text-lol-accent" />
           </button>
@@ -87,13 +72,6 @@ export const Champions = () => {
                           <b tw="text-lg">{c.name}</b> <i tw="text-xs">({c.title})</i> - {c.tags.join(", ")}
                         </div>
                         <div tw="col-span-full row-start-2">{c.blurb}</div>
-                        {/* <div tw="col-span-2 row-start-3 grid grid-cols-3">
-                            {Object.keys(c.stats).map((k) => (
-                              <label key={c.key + "-" + k} tw="">
-                                {k} : {c.stats?.[k as keyof typeof c.stats]}
-                              </label>
-                            ))}
-                          </div> */}
                       </div>
                     </li>
                   ),
