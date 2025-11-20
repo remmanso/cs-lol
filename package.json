@@ -7,10 +7,13 @@
     "start": "vite --port 3000",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --port 3000 --host"
+    "preview": "vite preview --port 3000 --host",
+    "start:server": "yarn --cwd server start",
+    "start:all": "concurrently \"yarn preview\" \"yarn start:server\""
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.9",
+    "concurrently": "^9.2.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-error-boundary": "^6.0.0",
