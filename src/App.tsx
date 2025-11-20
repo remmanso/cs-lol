@@ -4,6 +4,7 @@ import { CreepCalculator } from "./pages/Creep/CreepCalculator";
 import { Container } from "./styles/style";
 import { queryClient } from "./utils/utils";
 import { ErrorBoundary } from "react-error-boundary";
+import { Test } from "./pages/Test";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <CreepCalculator />
           <Champions />
+          <Test />
         </QueryClientProvider>
       </ErrorBoundary>
     </Container>
