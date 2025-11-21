@@ -9,6 +9,7 @@ import { create } from "domain";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const DEFAULT_VERSION = "15.23.1";
 const DATA_FOLDER_PATH = __dirname + "/data/";
 const CHAMPION_PATH = (key: string) => DATA_FOLDER_PATH + "/champions/" + key + "/";
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
@@ -50,13 +51,15 @@ const saveJsonFile = async (url: string, filePath: string) => {
   }
 };
 
-const getVersion = () => {
+const getVersion: () => string = () => {
   try {
     const version = fs.readFileSync(path.join(DATA_FOLDER_PATH, "version.json"), "utf-8");
-    return JSON.parse(version)?.current;
+    return JSON.parse(version)?.current ?? DEFAULT_VERSION;
   } catch (exception) {
     logger.error(`exception in getVersion ${exception}`);
   }
+  logger.error("DEFAULT_VERSION has been used.");
+  return DEFAULT_VERSION;
 };
 
 const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
@@ -100,8 +103,8 @@ const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
   return [false, lastRiotVersion];
 };
 
-const downloadData = async (version: string) => {
-  version ??= getVersion();
+const downloadData = async (version?: string | null) => {
+  if (!version) version = getVersion();
 
   if (!fs.existsSync(CHAMPION_PATH(""))) fs.mkdirSync(CHAMPION_PATH(""));
 
@@ -152,7 +155,7 @@ cron.schedule("0 * * * *", async () => {
 
   if (isUpToDate || !!version) return;
 
-  await downloadData();
+  await downloadData(version);
 });
 
 app.listen(PORT, () => {
