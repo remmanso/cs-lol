@@ -30,13 +30,6 @@ export default defineConfig({
       allow: [path.resolve(__dirname, "server", "data"), "./src"],
     },
   },
-  build: {
-    rollupOptions: {
-      input: {
-        server: "/server/data",
-      },
-    },
-  },
   preview: {
     port: 3000,
     allowedHosts: ["lol.loki-corp.com"],
