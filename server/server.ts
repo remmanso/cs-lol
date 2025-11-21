@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import cron from "node-cron";
 import winston from "winston";
+import { create } from "domain";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +27,19 @@ const logger = winston.createLogger({
   ],
 });
 
+const createDirIfNotExists = () => {
+  if (!fs.existsSync(DATA_FOLDER_PATH)) {
+    fs.mkdirSync(DATA_FOLDER_PATH);
+    fs.mkdirSync(CHAMPION_PATH(""));
+    logger.info("directory created");
+  }
+};
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  createDirIfNotExists();
+  next();
+});
+
 const saveJsonFile = async (url: string, filePath: string) => {
   try {
     const response = await axios.get(url);
@@ -36,15 +50,13 @@ const saveJsonFile = async (url: string, filePath: string) => {
   }
 };
 
-if (!fs.existsSync(DATA_FOLDER_PATH)) {
-  fs.mkdirSync(DATA_FOLDER_PATH);
-  fs.mkdirSync(CHAMPION_PATH(""));
-  logger.info("directory created");
-}
-
 const getVersion = () => {
-  const version = fs.readFileSync(path.join(DATA_FOLDER_PATH, "version.json"), "utf-8");
-  return JSON.parse(version)?.current;
+  try {
+    const version = fs.readFileSync(path.join(DATA_FOLDER_PATH, "version.json"), "utf-8");
+    return JSON.parse(version)?.current;
+  } catch (exception) {
+    logger.error(`exception in getVersion ${exception}`);
+  }
 };
 
 const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
@@ -107,7 +119,7 @@ const downloadData = async () => {
 };
 
 app.get("/version", async (_, res: Response) => {
-  const version = await getVersion();
+  const version = await isVersionUpToDate();
   res.send("current version is " + version);
 });
 
@@ -128,6 +140,7 @@ app.get("/champ/:name", async (req, res) => {
 
 // Optional: Schedule to fetch JSON every hour
 cron.schedule("0 * * * *", async () => {
+  createDirIfNotExists();
   logger.info("cron called at " + Date.now);
   const [isUpToDate, version] = await isVersionUpToDate();
   logger.info(`${isUpToDate}, ${version}, called at ${Date.now}`);
@@ -150,7 +163,8 @@ process.on("unhandledRejection", (reason) => {
   logger.error("Unhandled rejection:", reason);
 });
 
-app.use((err: Error, _req: Request, res: Response) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   logger.error(err);
   res.status(500).send("Internal Server Error");
 });
