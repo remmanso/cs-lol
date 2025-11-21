@@ -33,13 +33,10 @@ export const useChampionsQuery = () => {
   };
 };
 
-export const useAbilitiesQuery = (key: string, version: string) => {
+export const useAbilitiesQuery = (key: string) => {
   const championAbilitiesQuery = useSuspenseQuery<ddQuery<ddChampionWithSpells>>({
     queryKey: [ChampionAbilitiesUID, key],
-    queryFn: () =>
-      fetch(
-        `https://ddragon.leagueoflegends.com/cdn/${version ?? API_VERSION_FALLBACK}/data/en_US/champion/${key}.json`,
-      ).then((r) => r.json()),
+    queryFn: () => fetch(`/data/champions/${key}/abilities.json`).then((r) => r.json()),
   });
 
   return championAbilitiesQuery;

@@ -10,12 +10,19 @@ const PORT = process.env.PORT || 5000;
 
 const DEFAULT_VERSION = "15.23.1";
 const DATA_FOLDER_PATH = __dirname + "/data/";
-const CHAMPION_PATH = (key: string) => DATA_FOLDER_PATH + "/champions/" + key + "/";
-const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
-const CHAMPIONS_URL = (version: string) =>
-  `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`;
-const CHAMPIONS_ABILITIES = (version: string, key: string) =>
-  `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${key}.json`;
+const PATH = {
+  ABILITIES: (key: string) => path.join(DATA_FOLDER_PATH, "champions", key),
+  CHAMPIONS_JSON: path.join(DATA_FOLDER_PATH, "champions.json"),
+  VERSION_JSON: path.join(DATA_FOLDER_PATH, "version.json"),
+  ABILITIES_JSON: (key: string) => path.join(PATH.ABILITIES(key), "abilities.json"),
+};
+
+const URL = {
+  VERSION: "https://ddragon.leagueoflegends.com/api/versions.json",
+  CHAMPIONS: (version: string) => `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`,
+  ABILITIES: (version: string, key: string) =>
+    `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${key}.json`,
+};
 
 const logger = winston.createLogger({
   level: "info",
@@ -30,8 +37,7 @@ const logger = winston.createLogger({
 const createDirIfNotExists = () => {
   if (!fs.existsSync(DATA_FOLDER_PATH)) {
     fs.mkdirSync(DATA_FOLDER_PATH);
-    fs.mkdirSync(CHAMPION_PATH(""));
-    logger.info("directory created");
+    fs.mkdirSync(PATH.ABILITIES(""));
   }
 };
 
@@ -40,19 +46,21 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-const saveJsonFile = async (url: string, filePath: string) => {
+const saveAndReturnJsonAsync = async (url: string, filePath: string) => {
   try {
     const response = await axios.get(url);
-    fs.writeFileSync(filePath, JSON.stringify(response.data, null, 2), "utf8");
-    logger.info(`JSON saved to: ${filePath}`);
+    const json = JSON.stringify(response.data, null, 2);
+    fs.writeFileSync(filePath, json, "utf8");
+    return response.data;
   } catch (error) {
     logger.error(`Error fetching or saving JSON: ${error}`);
   }
+  return null;
 };
 
-const getVersion: () => string = () => {
+const getCurrentVersion: () => string = () => {
   try {
-    const version = fs.readFileSync(path.join(DATA_FOLDER_PATH, "version.json"), "utf-8");
+    const version = fs.readFileSync(PATH.VERSION_JSON, "utf-8");
     return JSON.parse(version)?.current ?? DEFAULT_VERSION;
   } catch (exception) {
     logger.error(`exception in getVersion ${exception}`);
@@ -61,9 +69,8 @@ const getVersion: () => string = () => {
   return DEFAULT_VERSION;
 };
 
-const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
-  const filePath = path.join(DATA_FOLDER_PATH, "version.json");
-  const versionResponse = await axios.get(VERSION_URL);
+const isLatestVersion: () => Promise<[boolean, string | null]> = async () => {
+  const versionResponse = await axios.get(URL.VERSION);
 
   if (!versionResponse.data || !Array.isArray(versionResponse.data) || versionResponse.data.length === 0) {
     logger.error("Data received was not as expected");
@@ -72,7 +79,7 @@ const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
   const lastRiotVersion = versionResponse.data[0];
 
   const writeRiotVersion = () => {
-    fs.writeFile(filePath, JSON.stringify({ current: lastRiotVersion }, null, 2), "utf8", (writeErr) => {
+    fs.writeFile(PATH.VERSION_JSON, JSON.stringify({ current: lastRiotVersion }, null, 2), "utf8", (writeErr) => {
       if (writeErr) {
         logger.error(`Error writing file: ${writeErr}`);
       } else {
@@ -81,13 +88,13 @@ const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
     });
   };
 
-  if (!fs.existsSync(filePath)) {
+  if (!fs.existsSync(PATH.VERSION_JSON)) {
     writeRiotVersion();
     return [false, lastRiotVersion];
   }
 
   try {
-    const data = fs.readFileSync(filePath, "utf-8");
+    const data = fs.readFileSync(PATH.VERSION_JSON, "utf-8");
     const version = JSON.parse(data);
     if (version.current !== lastRiotVersion) {
       writeRiotVersion();
@@ -102,24 +109,23 @@ const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
   return [false, lastRiotVersion];
 };
 
-const downloadData: (version?: string | null) => Promise<boolean> = async (version?: string | null) => {
-  if (!version) version = getVersion();
+const fetchChampionsAsync = async (version?: string | null) => {
+  if (!version) version = getCurrentVersion();
+  return await saveAndReturnJsonAsync(URL.CHAMPIONS(version), PATH.CHAMPIONS_JSON);
+};
 
-  if (!fs.existsSync(CHAMPION_PATH(""))) fs.mkdirSync(CHAMPION_PATH(""));
+const fetchChampionsAndAbilities: (version?: string | null) => Promise<boolean> = async (version?: string | null) => {
+  if (!version) version = getCurrentVersion();
 
-  const champResponse = await axios.get(CHAMPIONS_URL(version));
-  logger.info(`requesting ${CHAMPIONS_URL(version)}`);
+  const champResponse = await fetchChampionsAsync(version);
+
   if (!champResponse?.data || !champResponse?.data.data) {
     logger.error("Incorrect request.");
     return false;
   }
 
   Object.keys(champResponse.data.data).forEach(async (key) => {
-    if (!fs.existsSync(CHAMPION_PATH(key))) {
-      fs.mkdirSync(CHAMPION_PATH(key));
-      logger.info(`create ${CHAMPION_PATH(key)}`);
-    }
-    await saveJsonFile(CHAMPIONS_ABILITIES(version, key), CHAMPION_PATH(key) + "abilities.json");
+    await saveAndReturnJsonAsync(URL.ABILITIES(version, key), PATH.ABILITIES_JSON(key));
     logger.info(key + " downloaded");
   });
 
@@ -127,35 +133,34 @@ const downloadData: (version?: string | null) => Promise<boolean> = async (versi
 };
 
 app.get("/version", async (_, res: Response) => {
-  const version = await isVersionUpToDate();
+  const version = await isLatestVersion();
   res.send("current version is " + version);
 });
 
 app.get("/download", async (_, res: Response) => {
-  res.send(await downloadData());
+  res.send(await fetchChampionsAndAbilities());
 });
 
 app.get("/champ/:name", async (req, res) => {
   const key = req.params.name;
 
-  if (!fs.existsSync(CHAMPION_PATH(key))) res.json(null);
+  if (!fs.existsSync(PATH.ABILITIES(key))) res.json(null);
 
-  const abilities = fs.readFileSync(CHAMPION_PATH(key) + "abilities.json");
+  const abilities = fs.readFileSync(PATH.ABILITIES(key) + "abilities.json");
 
   res.json(abilities.toString());
 });
 
 // Optional: Schedule to fetch JSON every hour
 cron.schedule("0 3 * * 3", async () => {
-  createDirIfNotExists();
   const executionTime = new Date(Date.now()).toISOString();
   logger.info("cron called at " + executionTime);
-  const [isUpToDate, version] = await isVersionUpToDate();
+  const [isUpToDate, version] = await isLatestVersion();
   logger.info(`${isUpToDate}, ${version}, called at` + executionTime);
 
   if (isUpToDate || !version) return;
 
-  if (await downloadData(version)) logger.info("Download finished correctly");
+  if (await fetchChampionsAndAbilities(version)) logger.info("Download finished correctly");
   else logger.error("error happened on downloading data");
 });
 

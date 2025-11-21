@@ -19,11 +19,13 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 3000,
-    allowedHosts: ["lol.loki-corp.com"],
+    fs: {
+      strict: false,
+      allow: ["../server/data"],
+    },
   },
   preview: {
     port: 3000,
-    allowedHosts: ["lol.loki-corp.com"],
+    allowedHosts: ["lol.loki-corp.com", "localhost"],
   },
 });
