@@ -1,34 +1,45 @@
-// server.js
-const express = require("express");
-const axios = require("axios");
-const fs = require("fs");
-const path = require("path");
-const cron = require("node-cron");
+import express, { Request, Response, NextFunction } from "express";
+import axios from "axios";
+import fs from "fs";
+import path from "path";
+import cron from "node-cron";
+import winston from "winston";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 const DATA_FOLDER_PATH = __dirname + "/data/";
-const CHAMPION_PATH = (key) => DATA_FOLDER_PATH + "/champions/" + key + "/";
-const API_VERSION_FALLBACK = "15.22.1";
+const CHAMPION_PATH = (key: string) => DATA_FOLDER_PATH + "/champions/" + key + "/";
 const VERSION_URL = "https://ddragon.leagueoflegends.com/api/versions.json";
-const CHAMPIONS_URL = (version) => `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`;
-const CHAMPIONS_ABILITIES = (version, key) =>
+const CHAMPIONS_URL = (version: string) =>
+  `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`;
+const CHAMPIONS_ABILITIES = (version: string, key: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion/${key}.json`;
 
-const saveJsonFile = async (url, filePath) => {
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: "error.log", level: "error" }),
+    new winston.transports.File({ filename: "combined.log" }),
+  ],
+});
+
+const saveJsonFile = async (url: string, filePath: string) => {
   try {
     const response = await axios.get(url);
     fs.writeFileSync(filePath, JSON.stringify(response.data, null, 2), "utf8");
-    console.log(`JSON saved to: ${filePath}`);
+    logger.info(`JSON saved to: ${filePath}`);
   } catch (error) {
-    console.error(`Error fetching or saving JSON: ${error}`);
+    logger.error(`Error fetching or saving JSON: ${error}`);
   }
 };
 
 if (!fs.existsSync(DATA_FOLDER_PATH)) {
   fs.mkdirSync(DATA_FOLDER_PATH);
   fs.mkdirSync(CHAMPION_PATH(""));
+  logger.info("directory created");
 }
 
 const getVersion = () => {
@@ -36,22 +47,22 @@ const getVersion = () => {
   return JSON.parse(version)?.current;
 };
 
-const isUpToDate = async () => {
+const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
   const filePath = path.join(DATA_FOLDER_PATH, "version.json");
   const versionResponse = await axios.get(VERSION_URL);
 
   if (!versionResponse.data || !Array.isArray(versionResponse.data) || versionResponse.data.length === 0) {
-    console.error("Data received was not as expected");
-    return;
+    logger.error("Data received was not as expected");
+    return [false, null];
   }
   const lastRiotVersion = versionResponse.data[0];
 
   const writeRiotVersion = () => {
     fs.writeFile(filePath, JSON.stringify({ current: lastRiotVersion }, null, 2), "utf8", (writeErr) => {
       if (writeErr) {
-        console.error(`Error writing file: ${writeErr}`);
+        logger.error(`Error writing file: ${writeErr}`);
       } else {
-        console.log("File successfully updated.");
+        logger.info("File successfully updated.");
       }
     });
   };
@@ -70,7 +81,7 @@ const isUpToDate = async () => {
     }
     return [true, lastRiotVersion];
   } catch (error) {
-    console.error(`Error ${error}.`);
+    logger.error(`Error ${error}.`);
   }
   return [false, null];
 };
@@ -81,7 +92,7 @@ const downloadData = async () => {
 
   const champResponse = await axios.get(CHAMPIONS_URL(version));
   if (!champResponse?.data || !champResponse?.data.data) {
-    console.error("Incorrect request.");
+    logger.error("Incorrect request.");
     return;
   }
 
@@ -90,18 +101,19 @@ const downloadData = async () => {
       fs.mkdirSync(CHAMPION_PATH(key));
     }
     await saveJsonFile(CHAMPIONS_ABILITIES(version, key), CHAMPION_PATH(key) + "abilities.json");
-    console.log(key + " downloaded");
+    logger.info(key + " downloaded");
     return;
   });
 };
 
-app.get("/check-version", async (req, res) => {
-  const version = await checkVersion();
+app.get("/version", async (_, res: Response) => {
+  const version = await getVersion();
   res.send("current version is " + version);
 });
 
-app.get("/download-needed", async (_, res) => {
+app.get("/download", async (_, res: Response) => {
   downloadData();
+  res.send();
 });
 
 app.get("/champ/:name", async (req, res) => {
@@ -111,23 +123,34 @@ app.get("/champ/:name", async (req, res) => {
 
   const abilities = fs.readFileSync(CHAMPION_PATH(key) + "abilities.json");
 
-  res.json(JSON.parse(abilities));
+  res.json(abilities.toString());
 });
 
 // Optional: Schedule to fetch JSON every hour
-cron.schedule("0 6 * * *", async () => {
-  const [isUpToDate, version] = await isUpToDate();
+cron.schedule("0 * * * *", async () => {
+  logger.info("cron called at " + Date.now);
+  const [isUpToDate, version] = await isVersionUpToDate();
+  logger.info(`${isUpToDate}, ${version}, called at ${Date.now}`);
 
   if (isUpToDate || !!version) return;
 
   await downloadData();
 });
 
-// app.get("/data", (req, res) => {
-//   const filePath = path.join(__dirname, "data.json");
-//   res.sendFile(filePath);
-// });
-
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
+});
+
+// Catch uncaught exceptions and unhandled rejections
+process.on("uncaughtException", (err) => {
+  logger.error("Uncaught exception:", err);
+});
+
+process.on("unhandledRejection", (reason) => {
+  logger.error("Unhandled rejection:", reason);
+});
+
+app.use((err: Error, _req: Request, res: Response) => {
+  logger.error(err);
+  res.status(500).send("Internal Server Error");
 });

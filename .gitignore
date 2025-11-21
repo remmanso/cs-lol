@@ -22,4 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
 server/data/*
+server/*.js.map
+server/*.js
