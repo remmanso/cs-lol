@@ -105,6 +105,7 @@ const downloadData = async () => {
   if (!fs.existsSync(CHAMPION_PATH(""))) fs.mkdirSync(CHAMPION_PATH(""));
 
   const champResponse = await axios.get(CHAMPIONS_URL(version));
+  logger.info(`requesting ${CHAMPIONS_URL(version)}`);
   if (!champResponse?.data || !champResponse?.data.data) {
     logger.error("Incorrect request.");
     return;
@@ -113,6 +114,7 @@ const downloadData = async () => {
   Object.keys(champResponse.data.data).forEach(async (key) => {
     if (!fs.existsSync(CHAMPION_PATH(key))) {
       fs.mkdirSync(CHAMPION_PATH(key));
+      logger.info(`create ${CHAMPION_PATH(key)}`);
     }
     await saveJsonFile(CHAMPIONS_ABILITIES(version, key), CHAMPION_PATH(key) + "abilities.json");
     logger.info(key + " downloaded");
