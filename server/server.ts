@@ -95,7 +95,9 @@ const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
   } catch (error) {
     logger.error(`Error ${error}.`);
   }
-  return [false, null];
+
+  logger.error(`Something went wrong with local versionning.`);
+  return [false, lastRiotVersion];
 };
 
 const downloadData = async () => {
