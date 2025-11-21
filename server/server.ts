@@ -146,7 +146,7 @@ app.get("/champ/:name", async (req, res) => {
 });
 
 // Optional: Schedule to fetch JSON every hour
-cron.schedule("0 * * * *", async () => {
+cron.schedule("0 3 * * 3", async () => {
   createDirIfNotExists();
   const executionTime = new Date(Date.now()).toISOString();
   logger.info("cron called at " + executionTime);
