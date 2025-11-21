@@ -12,7 +12,7 @@ export const useChampionsQuery = () => {
   const getLastVersion = useQuery<string[]>({
     queryKey: [LastApiVersionQueryUID],
     queryFn: async () => {
-      const response = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
+      const response = await fetch("/data/version.json");
       return response.json();
     },
     staleTime: Infinity,
@@ -20,10 +20,7 @@ export const useChampionsQuery = () => {
 
   const championsQuery = useQuery<ddQuery<ddChampion>>({
     queryKey: [ChampionsQueryUID],
-    queryFn: () =>
-      fetch(
-        `https://ddragon.leagueoflegends.com/cdn/${getLastVersion.data?.[0] ?? API_VERSION_FALLBACK}/data/en_US/champion.json`,
-      ).then((r) => r.json()),
+    queryFn: () => fetch(`/data/champions.json`).then((r) => r.json()),
     enabled: Boolean(getLastVersion.isFetched && getLastVersion.data?.[0]),
   });
 

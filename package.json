@@ -10,7 +10,7 @@
     "preview": "vite preview --port 3000 --host",
     "start:server": "PORT=5000 yarn --cwd server start",
     "start:all": "concurrently \"yarn preview\" \"yarn start:server\"",
-    "start:dev": "concurrently \"yarn preview\" \"yarn --cwd server start\""
+    "start:dev": "concurrently \"yarn start\" \"yarn --cwd server tsc && yarn --cwd server start\""
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.9",

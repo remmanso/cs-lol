@@ -11,10 +11,10 @@ const PORT = process.env.PORT || 5000;
 const DEFAULT_VERSION = "15.23.1";
 const DATA_FOLDER_PATH = __dirname + "/data/";
 const PATH = {
-  ABILITIES: (key: string) => path.join(DATA_FOLDER_PATH, "champions", key),
+  CHAMPION: (key: string) => path.join(DATA_FOLDER_PATH, "champions", key),
   CHAMPIONS_JSON: path.join(DATA_FOLDER_PATH, "champions.json"),
   VERSION_JSON: path.join(DATA_FOLDER_PATH, "version.json"),
-  ABILITIES_JSON: (key: string) => path.join(PATH.ABILITIES(key), "abilities.json"),
+  ABILITIES_JSON: (key: string) => path.join(PATH.CHAMPION(key), "abilities.json"),
 };
 
 const URL = {
@@ -34,17 +34,21 @@ const logger = winston.createLogger({
   ],
 });
 
-const createDirIfNotExists = () => {
-  if (!fs.existsSync(DATA_FOLDER_PATH)) {
-    fs.mkdirSync(DATA_FOLDER_PATH);
-    fs.mkdirSync(PATH.ABILITIES(""));
-  }
+const createBaseStructure = () => {
+  const pathsToCreate = [DATA_FOLDER_PATH, PATH.CHAMPION("")];
+  pathsToCreate.forEach((path) => checkElseCreateDir(path));
+};
+
+const checkElseCreateDir = (path: string) => {
+  if (!fs.existsSync(path)) fs.mkdirSync(path);
 };
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  createDirIfNotExists();
+  createBaseStructure();
   next();
 });
+
+app.use("/data", express.static(DATA_FOLDER_PATH));
 
 const saveAndReturnJsonAsync = async (url: string, filePath: string) => {
   try {
@@ -55,13 +59,12 @@ const saveAndReturnJsonAsync = async (url: string, filePath: string) => {
   } catch (error) {
     logger.error(`Error fetching or saving JSON: ${error}`);
   }
-  return null;
 };
 
 const getCurrentVersion: () => string = () => {
   try {
     const version = fs.readFileSync(PATH.VERSION_JSON, "utf-8");
-    return JSON.parse(version)?.current ?? DEFAULT_VERSION;
+    return JSON.parse(version)?.[0] ?? DEFAULT_VERSION;
   } catch (exception) {
     logger.error(`exception in getVersion ${exception}`);
   }
@@ -69,7 +72,7 @@ const getCurrentVersion: () => string = () => {
   return DEFAULT_VERSION;
 };
 
-const isLatestVersion: () => Promise<[boolean, string | null]> = async () => {
+const checkElseFetchLastVersion: () => Promise<[boolean, string | null]> = async () => {
   const versionResponse = await axios.get(URL.VERSION);
 
   if (!versionResponse.data || !Array.isArray(versionResponse.data) || versionResponse.data.length === 0) {
@@ -79,7 +82,7 @@ const isLatestVersion: () => Promise<[boolean, string | null]> = async () => {
   const lastRiotVersion = versionResponse.data[0];
 
   const writeRiotVersion = () => {
-    fs.writeFile(PATH.VERSION_JSON, JSON.stringify({ current: lastRiotVersion }, null, 2), "utf8", (writeErr) => {
+    fs.writeFile(PATH.VERSION_JSON, JSON.stringify([lastRiotVersion]), "utf8", (writeErr) => {
       if (writeErr) {
         logger.error(`Error writing file: ${writeErr}`);
       } else {
@@ -96,7 +99,7 @@ const isLatestVersion: () => Promise<[boolean, string | null]> = async () => {
   try {
     const data = fs.readFileSync(PATH.VERSION_JSON, "utf-8");
     const version = JSON.parse(data);
-    if (version.current !== lastRiotVersion) {
+    if (version?.[0] !== lastRiotVersion) {
       writeRiotVersion();
       return [false, lastRiotVersion];
     }
@@ -119,12 +122,14 @@ const fetchChampionsAndAbilities: (version?: string | null) => Promise<boolean> 
 
   const champResponse = await fetchChampionsAsync(version);
 
-  if (!champResponse?.data || !champResponse?.data.data) {
+  if (!champResponse?.data) {
     logger.error("Incorrect request.");
     return false;
   }
 
-  Object.keys(champResponse.data.data).forEach(async (key) => {
+  Object.keys(champResponse.data).forEach(async (key) => {
+    checkElseCreateDir(PATH.CHAMPION(key));
+
     await saveAndReturnJsonAsync(URL.ABILITIES(version, key), PATH.ABILITIES_JSON(key));
     logger.info(key + " downloaded");
   });
@@ -132,30 +137,31 @@ const fetchChampionsAndAbilities: (version?: string | null) => Promise<boolean> 
   return true;
 };
 
-app.get("/version", async (_, res: Response) => {
-  const version = await isLatestVersion();
+app.get("/version", async (req, res: Response) => {
+  const version = await checkElseFetchLastVersion();
   res.send("current version is " + version);
 });
 
-app.get("/download", async (_, res: Response) => {
-  res.send(await fetchChampionsAndAbilities());
+app.get("/download", async (req, res: Response) => {
+  const [, version] = await checkElseFetchLastVersion();
+  res.send(await fetchChampionsAndAbilities(version));
 });
 
-app.get("/champ/:name", async (req, res) => {
-  const key = req.params.name;
+app.get("/champ/:key", async (req, res) => {
+  const key = req.params.key;
 
-  if (!fs.existsSync(PATH.ABILITIES(key))) res.json(null);
+  if (!fs.existsSync(PATH.CHAMPION(key))) res.json(null);
 
-  const abilities = fs.readFileSync(PATH.ABILITIES(key) + "abilities.json");
+  const abilities = fs.readFileSync(PATH.ABILITIES_JSON(key));
 
-  res.json(abilities.toString());
+  res.json(JSON.parse(abilities.toString()));
 });
 
 // Optional: Schedule to fetch JSON every hour
 cron.schedule("0 3 * * 3", async () => {
   const executionTime = new Date(Date.now()).toISOString();
   logger.info("cron called at " + executionTime);
-  const [isUpToDate, version] = await isLatestVersion();
+  const [isUpToDate, version] = await checkElseFetchLastVersion();
   logger.info(`${isUpToDate}, ${version}, called at` + executionTime);
 
   if (isUpToDate || !version) return;

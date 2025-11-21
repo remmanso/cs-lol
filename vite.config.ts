@@ -19,13 +19,26 @@ export default defineConfig({
     }),
   ],
   server: {
+    proxy: {
+      "/data": {
+        target: "http://localhost:5000",
+        changeOrigin: true,
+      },
+    },
     fs: {
       strict: false,
-      allow: ["../server/data"],
+      allow: [path.resolve(__dirname, "server", "data"), "./src"],
+    },
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        server: "/server/data",
+      },
     },
   },
   preview: {
     port: 3000,
-    allowedHosts: ["lol.loki-corp.com", "localhost"],
+    allowedHosts: ["lol.loki-corp.com"],
   },
 });
