@@ -100,8 +100,9 @@ const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
   return [false, lastRiotVersion];
 };
 
-const downloadData = async () => {
-  const version = getVersion();
+const downloadData = async (version: string) => {
+  version ??= getVersion();
+
   if (!fs.existsSync(CHAMPION_PATH(""))) fs.mkdirSync(CHAMPION_PATH(""));
 
   const champResponse = await axios.get(CHAMPIONS_URL(version));
@@ -145,7 +146,7 @@ app.get("/champ/:name", async (req, res) => {
 // Optional: Schedule to fetch JSON every hour
 cron.schedule("0 * * * *", async () => {
   createDirIfNotExists();
-  logger.info("cron called at " + Date.now);
+  logger.info("cron called at " + new Date(Date.now()).toISOString());
   const [isUpToDate, version] = await isVersionUpToDate();
   logger.info(`${isUpToDate}, ${version}, called at ${Date.now}`);
 
