@@ -6,7 +6,7 @@ import {} from "twin.macro";
 const spellsName = ["Q", "W", "E", "R"];
 
 export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
-  const query = useAbilitiesQuery(champ.id, champ.version);
+  const query = useAbilitiesQuery(champ.id);
 
   return (
     <Suspense>
