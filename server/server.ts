@@ -103,7 +103,7 @@ const isVersionUpToDate: () => Promise<[boolean, string | null]> = async () => {
   return [false, lastRiotVersion];
 };
 
-const downloadData = async (version?: string | null) => {
+const downloadData: (version?: string | null) => Promise<boolean> = async (version?: string | null) => {
   if (!version) version = getVersion();
 
   if (!fs.existsSync(CHAMPION_PATH(""))) fs.mkdirSync(CHAMPION_PATH(""));
@@ -112,7 +112,7 @@ const downloadData = async (version?: string | null) => {
   logger.info(`requesting ${CHAMPIONS_URL(version)}`);
   if (!champResponse?.data || !champResponse?.data.data) {
     logger.error("Incorrect request.");
-    return;
+    return false;
   }
 
   Object.keys(champResponse.data.data).forEach(async (key) => {
@@ -122,8 +122,9 @@ const downloadData = async (version?: string | null) => {
     }
     await saveJsonFile(CHAMPIONS_ABILITIES(version, key), CHAMPION_PATH(key) + "abilities.json");
     logger.info(key + " downloaded");
-    return;
   });
+
+  return true;
 };
 
 app.get("/version", async (_, res: Response) => {
@@ -132,8 +133,7 @@ app.get("/version", async (_, res: Response) => {
 });
 
 app.get("/download", async (_, res: Response) => {
-  downloadData();
-  res.send();
+  res.send(await downloadData());
 });
 
 app.get("/champ/:name", async (req, res) => {
@@ -149,13 +149,15 @@ app.get("/champ/:name", async (req, res) => {
 // Optional: Schedule to fetch JSON every hour
 cron.schedule("0 * * * *", async () => {
   createDirIfNotExists();
-  logger.info("cron called at " + new Date(Date.now()).toISOString());
+  const executionTime = new Date(Date.now()).toISOString();
+  logger.info("cron called at " + executionTime);
   const [isUpToDate, version] = await isVersionUpToDate();
-  logger.info(`${isUpToDate}, ${version}, called at ${Date.now}`);
+  logger.info(`${isUpToDate}, ${version}, called at` + executionTime);
 
-  if (isUpToDate || !!version) return;
+  if (isUpToDate || !version) return;
 
-  await downloadData(version);
+  if (await downloadData(version)) logger.info("Download finished correctly");
+  else logger.error("error happened on downloading data");
 });
 
 app.listen(PORT, () => {
