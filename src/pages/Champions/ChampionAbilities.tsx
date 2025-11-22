@@ -16,7 +16,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
   console.log(counter);
   return (
     <Suspense>
-      <div tw="grid [grid-template-columns: repeat(auto-fit, minmax(150px, 0.5fr) minmax(150px, 0.5fr))] sm:[grid-template-columns: repeat(auto-fit, minmax(200px, 0.5fr) minmax(200px, 0.5fr))] gap-4 md:gap-8 place-items-center text-sm">
+      <div tw="grid [grid-template-columns: repeat(auto-fit, minmax(150px, 0.5fr) minmax(150px, 0.5fr))] sm:[grid-template-columns: repeat(auto-fit, minmax(200px, 0.5fr) minmax(200px, 0.5fr))] gap-4 md:gap-8 place-items-center text-sm touch-none">
         {query.data.data[champ.id].spells.map((s, spellI) => (
           <div
             key={s.id + champ.id}
