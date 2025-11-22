@@ -13,7 +13,6 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
     setCounter([...Array(query.data.data[champ.id].spells.length)].map(() => 0));
   }, [champ.id, query.data]);
 
-  console.log(query.data.data[champ.id]);
   return (
     <Suspense>
       <div

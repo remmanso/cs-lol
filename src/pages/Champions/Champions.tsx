@@ -37,7 +37,6 @@ export const Champions = () => {
 
   useEffect(() => {
     const keyHandler = (event: KeyboardEvent) => {
-      console.log(event);
       if (event.key === "Escape") {
         setChampionSearched("");
         event.preventDefault();
