@@ -36,6 +36,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                   tw="rounded-md justify-self-center place-self-end shadow-cm"
                   height={45}
                   width={45}
+                  draggable="false"
                   title={s.description}
                 />
                 <label tw="text-lg absolute left-0.5 bottom-0.5 [line-height: 100%] font-extrabold drop-shadow-outline">
