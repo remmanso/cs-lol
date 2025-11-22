@@ -10,17 +10,26 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
   const [counter, setCounter] = useState<number[]>([]);
 
   useEffect(() => {
-    setCounter([...Array(query.data.data[champ.id].spells.length)].map(() => -1));
+    setCounter([...Array(query.data.data[champ.id].spells.length)].map(() => 0));
     console.log("called");
   }, [champ.id, query.data]);
   console.log(counter);
   return (
     <Suspense>
-      <div tw="grid [grid-template-columns: repeat(auto-fit, minmax(150px, 0.5fr) minmax(150px, 0.5fr))] sm:[grid-template-columns: repeat(auto-fit, minmax(200px, 0.5fr) minmax(200px, 0.5fr))] gap-4 md:gap-8 place-items-center text-sm touch-none [user-select: none] [-webkit-user-drag: none]">
+      <div
+        tw="grid 
+        [grid-template-columns: repeat(auto-fit, minmax(150px, 0.5fr) minmax(150px, 0.5fr))] 
+      sm:[grid-template-columns: repeat(auto-fit, minmax(200px, 0.5fr) minmax(200px, 0.5fr))] 
+      gap-4 
+      md:gap-8 
+      place-items-stretch text-sm touch-none [user-select: none] [-webkit-user-drag: none]"
+      >
         {query.data.data[champ.id].spells.map((s, spellI) => (
           <div
             key={s.id + champ.id}
-            tw="flex flex-col items-stretch justify-end [column-gap: 2ch] min-w-fit h-full cursor-pointer"
+            tw="flex flex-col mx-auto items-stretch justify-end 
+            [column-gap: 2ch] 
+            [min-width: 200px] h-full cursor-pointer w-full ring-1 active:ring-lol-yellow ring-white rounded-lg p-4"
             onPointerDown={() => {
               setCounter((prev) => {
                 const newCounter = [...prev];
@@ -46,32 +55,31 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
               <label tw="text-base [text-overflow: ellipsis] text-end [flex-grow: 1] w-min max-w-fit ">{s.name}</label>
             </div>
 
-            <label tw="flex flex-wrap justify-between gap-4 items-center">
-              <span tw="text-xs font-light">Cd(s):</span>
-              <div tw="flex flex-nowrap items-center [width: max-content] gap-1 text-sm text-end justify-end font-semibold">
-                {s.cooldown.map((c, i, arr) => (
-                  <div
-                    key={s.id + "-" + i}
-                    style={counter[spellI] > -1 && counter[spellI] % arr.length === i ? { color: "#c28f2c" } : {}}
-                  >
-                    {c + (i < s.cooldown.length - 1 ? "," : "")}{" "}
-                  </div>
-                ))}
-              </div>
-            </label>
-            <label tw="flex flex-wrap justify-between gap-4 items-center">
-              <b tw="text-xs font-light">Cost:</b>
-              <div tw="flex flex-nowrap items-center [width: max-content] gap-1 text-sm text-end justify-end font-semibold">
-                {s.cost.map((c, i, arr) => (
-                  <div
-                    key={s.id + "-" + i}
-                    style={counter[spellI] > -1 && counter[spellI] % arr.length === i ? { color: "#c28f2c" } : {}}
-                  >
-                    {c + (i < s.cost.length - 1 ? "," : "")}{" "}
-                  </div>
-                ))}
-              </div>
-            </label>
+            <div tw="mt-2.5 grid grid-rows-2 [grid-template-columns: 5ch repeat(auto-fit, minmax(0,1fr))] [gap: 0.5rem] items-center">
+              <span tw="row-start-1 text-xs font-light inline-flex flex-wrap">Cool-down:</span>
+              {s.cooldown.map((c, i, arr) => (
+                <div
+                  tw="row-start-1 font-semibold rounded text-center ring-1 ring-lol-yellow relative text-sm md:text-base"
+                  key={s.id + "-" + i}
+                  style={counter[spellI] % arr.length === i ? { color: "#c28f2c" } : {}}
+                >
+                  {c}
+                  {c ?
+                    <span tw="[font-size: 10px]">s</span>
+                  : ""}
+                </div>
+              ))}
+              <span tw="row-start-2 text-xs font-light">Cost:</span>
+              {s.cost.map((c, i, arr) => (
+                <div
+                  tw="row-start-2 font-semibold shadow-cm rounded text-center ring-1 ring-lol-yellow text-sm md:text-base"
+                  key={s.id + "-" + i}
+                  style={counter[spellI] % arr.length === i ? { color: "#c28f2c" } : {}}
+                >
+                  {c}
+                </div>
+              ))}
+            </div>
             {/* <p>{s.description}</p> */}
           </div>
         ))}
