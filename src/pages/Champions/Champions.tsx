@@ -25,17 +25,17 @@ export const Champions = () => {
   }, []);
 
   return (
-    <div tw="mt-2 m-auto rounded-lg p-8">
+    <div tw="mt-2 rounded-lg p-8">
       <Title>Champions :</Title>
-      <div tw="grid grid-cols-2 gap-4 grid-rows-1">
+      <div tw="grid grid-cols-2 gap-4 grid-rows-1 w-full">
         <label tw="row-start-1 col-start-2 justify-self-end">
           Patch version : {lastVersion.data?.[0] ?? "No version"}
         </label>
         <label tw="row-start-1 col-start-1 justify-self-start">Search :</label>
-        <div tw="col-span-2 grid grid-cols-1 relative">
+        <div tw="col-span-2 grid grid-cols-1 relative w-full">
           <input
             type="text"
-            tw="inline-flex justify-center text-lol-client-bg p-1 font-bold text-base outline-lol-client-bg rounded-md relative px-2 focus:accent-lol-yellow"
+            tw="inline-flex justify-center text-lol-client-bg p-1 font-bold text-base outline-lol-client-bg rounded-md relative px-2 focus:accent-lol-yellow w-full"
             id="search-champions"
             value={championSearched}
             onChange={handleChampion}
