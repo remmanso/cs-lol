@@ -21,7 +21,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
         [grid-template-columns: repeat(auto-fit, minmax(150px, 0.5fr) minmax(150px, 0.5fr))] 
       sm:[grid-template-columns: repeat(auto-fit, minmax(200px, 0.5fr) minmax(200px, 0.5fr))] 
       gap-4 
-      md:gap-8 
+      md:gap-4 
       place-items-stretch text-sm touch-none [user-select: none] [-webkit-user-drag: none]"
       >
         {query.data.data[champ.id].spells.map((s, spellI) => (
