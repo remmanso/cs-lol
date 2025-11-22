@@ -55,7 +55,7 @@ export const Champions = () => {
         : <></>}
 
         <div tw="col-span-full">
-          <ul tw="grid gap-1">
+          <ul tw="grid gap-3">
             {champions
               .filter((c) => c.name.toLowerCase().includes(championSearched.toLowerCase()))
               .map(
@@ -63,7 +63,7 @@ export const Champions = () => {
                   c && (
                     <li
                       key={c.id}
-                      tw="border-2 rounded p-2 border-white/30 hover:bg-lol-accent/20 cursor-pointer"
+                      tw="border rounded-lg p-4 ring-1 ring-white/30 hover:bg-lol-accent/20 cursor-pointer"
                       onClick={() => setChampionSelected(c)}
                     >
                       <div tw="grid [grid-template-columns: auto 1fr] gap-3 items-center">
