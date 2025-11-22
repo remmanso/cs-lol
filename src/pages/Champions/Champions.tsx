@@ -63,7 +63,7 @@ export const Champions = () => {
   }, [champions, handleEnter]);
 
   return (
-    <div tw="mt-2 rounded-lg p-8">
+    <div tw="mt-2 rounded-lg px-8">
       <Title>Champions :</Title>
       <div tw="grid grid-cols-2 gap-4 grid-rows-1 w-full">
         <label tw="row-start-1 col-start-2 justify-self-end">
