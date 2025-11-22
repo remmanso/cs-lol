@@ -11,9 +11,8 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
 
   useEffect(() => {
     setCounter([...Array(query.data.data[champ.id].spells.length)].map(() => 0));
-    console.log("called");
   }, [champ.id, query.data]);
-  console.log(counter);
+
   return (
     <Suspense>
       <div

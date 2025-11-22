@@ -51,34 +51,40 @@ export const Champions = () => {
         </div>
         {championSelected ?
           <div tw="col-span-2">
+            <div tw="flex flex-row py-4 gap-4 rounded-lg items-end">
+              <img
+                tw="[flex: 0 0 60px] [aspect-ratio: 1 / 1]"
+                src={championImgSrc(championSelected.image.full, championSelected.version)}
+                height={40}
+                width={40}
+              />
+              <Title tw="text-2xl p-0 m-0">{championSelected.name}</Title>
+              <span tw="text-sm p-0 m-0 mb-0.5">{championSelected.tags.join(", ")}</span>
+            </div>
             <ChampionAbilities champ={championSelected}></ChampionAbilities>
           </div>
         : <></>}
 
-        <div tw="col-span-full">
-          <ul tw="grid gap-4">
-            {champions
-              .filter((c) => c.name.toLowerCase().includes(championSearched.toLowerCase()))
-              .map(
-                (c) =>
-                  c && (
-                    <li
-                      key={c.id}
-                      tw="rounded-lg p-4 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm"
-                      css={[c.id === championSelected?.id ? tw`bg-lol-yellow/40 ring-lol-yellow` : tw``]}
-                      onClick={() => setChampionSelected(c)}
-                    >
-                      <div tw="grid [grid-template-columns: auto 1fr] gap-3 items-center">
-                        <img tw="" src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
-                        <div>
-                          <b tw="text-lg">{c.name}</b> <i tw="text-xs">({c.title})</i> - {c.tags.join(", ")}
-                        </div>
-                        <div tw="col-span-full row-start-2">{c.blurb}</div>
-                      </div>
-                    </li>
-                  ),
-              )}
-          </ul>
+        <div tw="col-span-full flex flex-wrap gap-2">
+          {/* <ul tw="grid gap-4"> */}
+          {champions
+            .filter((c) => c.name.toLowerCase().includes(championSearched.toLowerCase()))
+            .map(
+              (c) =>
+                c && (
+                  <div
+                    key={c.id}
+                    tw="flex items-center rounded-lg p-2 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm"
+                    css={[c.id === championSelected?.id ? tw`bg-lol-yellow/40 ring-lol-yellow` : tw``]}
+                    onClick={() => setChampionSelected(c)}
+                  >
+                    <img tw="[flex: 0 0 40px]" src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
+                    {/* <b tw="text-lg">{c.name}</b> */}
+                    {/* <i tw="text-xs">({c.title})</i> - {c.tags.join(", ")} */}
+                  </div>
+                ),
+            )}
+          {/* </ul> */}
         </div>
       </div>
     </div>
