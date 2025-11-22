@@ -14,8 +14,8 @@ function App() {
         <ErrorBoundary fallback={<p>⚠️Oups! Something went wrong...</p>}>
           <QueryClientProvider client={queryClient}>
             <BodyContainer>
-              <CreepCalculator />
               <Champions />
+              <CreepCalculator />
             </BodyContainer>
           </QueryClientProvider>
         </ErrorBoundary>
