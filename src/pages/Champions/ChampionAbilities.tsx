@@ -13,6 +13,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
     setCounter([...Array(query.data.data[champ.id].spells.length)].map(() => 0));
   }, [champ.id, query.data]);
 
+  console.log(query.data.data[champ.id]);
   return (
     <Suspense>
       <div
@@ -39,7 +40,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
             }}
           >
             <div tw="flex justify-between items-end gap-4 relative">
-              <div tw="relative [flex: 0 0 45px]">
+              <div tw="relative [flex: 0 0 45px] pt-1">
                 <img
                   src={CHAMPION_IMG_URL(s.image.full, champ.version)}
                   tw="rounded-md justify-self-center place-self-end shadow-cm"
@@ -53,9 +54,17 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                 </label>
               </div>
               <label tw="text-base font-bold text-end [flex-grow: 1] w-min max-w-fit">{s.name}</label>
-              <span tw="absolute text-xs right-0 top-0 text-lol-yellow">
-                Lvl {(counter[spellI] % s.cooldown.length) + 1}
-              </span>
+              <div tw="flex absolute text-xs -right-2 -top-3 gap-2">
+                <label tw="text-xs font-bold text-end [flex-grow: 0 1 max-content]">
+                  {s.tooltip.includes("<physicalDamage>") ?
+                    <span tw="text-red-500">Physical</span>
+                  : s.tooltip.includes("<magicDamage>") ?
+                    <span tw="text-purple-600">Magical</span>
+                  : ""}
+                  {s.tooltip.includes("<trueDamage>") ? " & True" : ""}
+                </label>
+                <span tw="text-lol-yellow">Lvl {(counter[spellI] % s.cooldown.length) + 1}</span>
+              </div>
             </div>
 
             <div tw="mt-2.5 grid grid-rows-2 [grid-template-columns: 5ch repeat(auto-fit, minmax(0,1fr))] [gap: 0.5rem] items-center">
