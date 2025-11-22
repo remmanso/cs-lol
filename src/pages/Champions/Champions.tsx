@@ -68,14 +68,19 @@ export const Champions = () => {
         <div tw="col-span-full flex flex-wrap gap-2">
           {/* <ul tw="grid gap-4"> */}
           {champions
-            .filter((c) => c.name.toLowerCase().includes(championSearched.toLowerCase()))
+            // .filter((c) => c.name.toLowerCase().includes(championSearched.toLowerCase()))
             .map(
               (c) =>
                 c && (
                   <div
                     key={c.id}
                     tw="flex items-center rounded-lg p-2 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm"
-                    css={[c.id === championSelected?.id ? tw`bg-lol-yellow/40 ring-lol-yellow` : tw``]}
+                    css={[
+                      c.id === championSelected?.id ? tw`bg-lol-yellow/40 ring-lol-yellow` : tw``,
+                      !c.name.toLowerCase().includes(championSearched.toLowerCase()) ?
+                        tw`opacity-20`
+                      : championSearched.toLowerCase() && tw`bg-lol-yellow`,
+                    ]}
                     onClick={() => setChampionSelected(c)}
                   >
                     <img tw="[flex: 0 0 40px]" src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
