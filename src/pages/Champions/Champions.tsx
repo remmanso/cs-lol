@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import tw from "twin.macro";
-import { useChampionsQuery } from "../../hooks/useDDragon";
 import SvgIcon from "../../components/SvgIcon";
+import { useChampionsQuery } from "../../hooks/useDDragon";
+import { Title } from "../../styles/style";
 import { ddChampion } from "../../utils/ddTypes";
 import { ChampionAbilities } from "./ChampionAbilities";
-import { Title } from "../../styles/style";
 
 const championImgSrc = (imgPath: string, patch: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${patch}/img/champion/${imgPath}`;
@@ -13,6 +13,7 @@ export const Champions = () => {
   const [championSearched, setChampionSearched] = useState<string>("");
   const [championSelected, setChampionSelected] = useState<ddChampion | null>(null);
   const { champions: championsData, lastVersion } = useChampionsQuery();
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const champions = useMemo(() => {
     const cData = championsData.data?.data;
@@ -23,6 +24,40 @@ export const Champions = () => {
   const handleChampion = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setChampionSearched((prev) => e.target.value ?? prev);
   }, []);
+
+  const handleEnter = useCallback(() => {
+    if (!searchRef?.current?.value) return;
+
+    const searched = champions.filter((c) =>
+      c.name.toLowerCase().includes(searchRef?.current?.value.toLowerCase() ?? ""),
+    );
+
+    if (searched.length === 1) setChampionSelected(searched[0]);
+  }, [champions]);
+
+  useEffect(() => {
+    const keyHandler = (event: KeyboardEvent) => {
+      console.log(event);
+      if (event.key === "Escape") {
+        setChampionSearched("");
+        event.preventDefault();
+      } else if (event.key === "Enter") {
+        handleEnter();
+        event.preventDefault();
+      } else if (event.ctrlKey && event.key == "k") {
+        searchRef?.current?.scrollTo({ behavior: "smooth", top: 0 });
+        searchRef?.current?.focus();
+        event.preventDefault();
+      }
+    };
+
+    // Add event listener when component mounts
+    window.addEventListener("keydown", keyHandler);
+
+    return () => {
+      window.removeEventListener("keydown", keyHandler);
+    };
+  }, [champions, handleEnter]);
 
   return (
     <div tw="mt-2 rounded-lg p-8">
@@ -35,10 +70,11 @@ export const Champions = () => {
         <div tw="col-span-2 grid grid-cols-1 relative w-full">
           <input
             type="text"
-            tw="inline-flex justify-center text-lol-client-bg p-1 font-bold text-base outline-lol-client-bg rounded-md relative px-2 focus:accent-lol-yellow w-full"
+            tw="inline-flex justify-center text-lol-client-bg p-1 font-bold text-base outline-lol-client-bg rounded-md relative px-2 focus:outline-lol-yellow w-full"
             id="search-champions"
             value={championSearched}
             onChange={handleChampion}
+            ref={searchRef}
           />
           <button id="reset" tw="h-full justify-self-end absolute m-auto mr-2" onClick={() => setChampionSearched("")}>
             <SvgIcon name="close" tw="[width: 20px] [height: 20px] text-lol-client-bg/75 hover:text-lol-yellow" />
