@@ -61,6 +61,23 @@ const saveAndReturnJsonAsync = async (url: string, filePath: string) => {
   }
 };
 
+// async function downloadImage(url: string, key: string) {
+//   const writer = Fs.createWriteStream(path.join(__dirname, "images", "code.jpg"));
+
+//   const response = await Axios({
+//     url,
+//     method: "GET",
+//     responseType: "stream",
+//   });
+
+//   response.data.pipe(writer);
+
+//   return new Promise((resolve, reject) => {
+//     writer.on("finish", resolve);
+//     writer.on("error", reject);
+//   });
+// }
+
 const getCurrentVersion: () => string = () => {
   try {
     const version = fs.readFileSync(PATH.VERSION_JSON, "utf-8");
@@ -129,6 +146,9 @@ const fetchChampionsAndAbilities: (version?: string | null) => Promise<boolean> 
 
   Object.keys(champResponse.data).forEach(async (key) => {
     checkElseCreateDir(PATH.CHAMPION(key));
+    // const img = await axios.get(
+    //   `https://ddragon.leagueoflegends.com/cdn/${version}/img/spell/${champResponse.data[key].image.full}`,
+    // );
 
     await saveAndReturnJsonAsync(URL.ABILITIES(version, key), PATH.ABILITIES_JSON(key));
     logger.info(key + " downloaded");

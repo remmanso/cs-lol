@@ -1,11 +1,6 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  LastApiVersionQueryUID,
-  ChampionsQueryUID,
-  API_VERSION_FALLBACK,
-  ChampionAbilitiesUID,
-} from "../utils/constants";
-import { ddQuery, ddChampion, ddChampionWithSpells } from "../utils/ddTypes";
+import { ChampionAbilitiesUID, ChampionsQueryUID, LastApiVersionQueryUID } from "../utils/constants";
+import { ddChampion, ddChampionWithSpells, ddQuery } from "../utils/ddTypes";
 
 // const errorLog = () => console.error("unable to get last api version, defaults to 15.22.1");
 export const useChampionsQuery = () => {

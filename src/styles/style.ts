@@ -1,3 +1,12 @@
-import tw from "twin.macro";
+import tw, { css, styled } from "twin.macro";
 
-export const Container = tw.div`h-screen w-screen overflow-auto bg-lol-client-bg font-medium text-white p-0 md:p-4 `;
+export const Container = styled.div(() => [
+  tw`overflow-auto [height: calc(100vh-50px)] [width: 100vw] relative`,
+  css`
+    scrollbar-color: #1a1e31 #94a3b8;
+    scrollbar-color: #d1d1d1 #2c2c2c;
+    scrollbar-width: thin;
+  `,
+]);
+
+export const BodyContainer = tw.div`flex flex-col max-w-screen-2xl m-auto relative pt-nav`;

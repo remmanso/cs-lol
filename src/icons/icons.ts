@@ -1,1 +1,1 @@
-export type IconsType = "close";
+export type IconsType = "close" | "lol-infernal";

@@ -1,6 +1,6 @@
 import tw, { styled } from "twin.macro";
 
-export const ContainerGrid = tw.div`m-auto grid max-w-5xl select-none gap-2 p-4 md:text-2xl text-xl`;
+export const ContainerGrid = tw.div`m-auto grid w-full select-none gap-2 p-4 md:text-2xl text-xl`;
 export const Container = tw.div`m-auto grid [grid-template-rows: auto 1fr] md:[grid-template-columns: repeat(3, auto)] w-full md:justify-items-center gap-x-6 gap-y-2 md:text-xl text-base font-semibold `;
 
 export const MinionTile = tw.div`grid [grid-template-columns: auto 1fr] row-span-1 w-full`;

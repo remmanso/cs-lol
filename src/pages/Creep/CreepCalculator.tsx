@@ -48,6 +48,7 @@ export const CreepCalculator = () => {
   return (
     <>
       <ContainerGrid>
+        <h1 tw="m-3 text-3xl">Minions Spawn Simulator</h1>
         <GameDuration>
           Game duration: {minutes.current === 0 ? "0" : minutes.current}m
           {seconds.current % 60 === 0 ? "" : seconds.current + "s"}
