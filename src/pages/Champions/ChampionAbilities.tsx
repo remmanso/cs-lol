@@ -54,15 +54,19 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                 </label>
               </div>
               <label tw="text-base font-bold text-end [flex-grow: 1] w-min max-w-fit">{s.name}</label>
-              <div tw="flex absolute text-xs -right-2 -top-3 gap-2">
+              <div tw="flex absolute text-xs -right-2 -top-3 gap-2 font-bold">
                 <label tw="text-xs font-bold text-end [flex-grow: 0 1 max-content]">
                   {s.tooltip.includes("<physicalDamage>") ?
-                    <span tw="text-red-500">Physical</span>
+                    <span tw="bg-red-500 rounded px-1">Physical</span>
                   : s.tooltip.includes("<magicDamage>") ?
-                    <span tw="text-purple-600">Magical</span>
+                    <span tw="bg-purple-600 rounded px-1 ">Magical</span>
                   : ""}
-                  {s.tooltip.includes("<trueDamage>") ? " & True" : ""}
                 </label>
+                {s.tooltip.includes("<trueDamage>") ?
+                  <>
+                    &<span tw="bg-white rounded text-lol-client-bg px-1">True</span>
+                  </>
+                : ""}
                 <span tw="text-lol-yellow">Lvl {(counter[spellI] % s.cooldown.length) + 1}</span>
               </div>
             </div>
