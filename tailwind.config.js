@@ -12,6 +12,9 @@ module.exports = {
         "lol-accent": "#117b8b",
         "lol-gray": "#1a1e31",
         "lol-yellow": "#c28f2c",
+        "lol-client-gray": "#192026",
+        "lol-client-yellow": "#785a28",
+        "lol-client-blue": "#010a13",
       },
       screens: {
         xs: "20rem",

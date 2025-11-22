@@ -10,3 +10,5 @@ export const Container = styled.div(() => [
 ]);
 
 export const BodyContainer = tw.div`flex flex-col max-w-screen-2xl m-auto relative pt-nav`;
+
+export const Title = tw.h1`m-3 text-3xl ml-0 text-lol-yellow`;

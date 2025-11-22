@@ -6,14 +6,12 @@ export const NavBar = () => {
     <>
       <div
         tw="top-0 left-0 right-0 h-nav flex flex-row items-center p-2 px-8 mx-2
-        bg-gray-900/50
-        [background-color: #06242c]
+        bg-lol-client-gray
         text-lol-yellow
         text-lg
         sm:text-2xl 
         shadow-2xl
         rounded-b-xl
-        shadow-black/50
         outline-1
         outline
         outline-white/5

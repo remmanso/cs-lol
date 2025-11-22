@@ -89,7 +89,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
         tw="relative flex h-5 shrink items-center hover:cursor-pointer"
         onPointerDown={(e) => handlePointerDown.current(e.nativeEvent)}
       >
-        <span tw="absolute left-0 right-0 h-1.5 rounded-sm bg-lol-accent shadow"></span>
+        <span tw="absolute left-0 right-0 h-1.5 rounded-sm bg-lol-yellow shadow"></span>
         <div
           ref={slider}
           tw="relative flex items-center hover:cursor-pointer"
