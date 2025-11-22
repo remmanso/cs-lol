@@ -21,7 +21,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
           <div
             key={s.id + champ.id}
             tw="flex flex-col items-stretch justify-end [column-gap: 2ch] min-w-fit h-full cursor-pointer"
-            onMouseDown={() => {
+            onPointerDown={() => {
               setCounter((prev) => {
                 const newCounter = [...prev];
                 newCounter[spellI] = newCounter[spellI] + 1;
