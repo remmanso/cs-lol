@@ -44,7 +44,10 @@ export const Champions = () => {
       } else if (event.key === "Enter") {
         handleEnter();
         event.preventDefault();
-      } else if (event.ctrlKey && event.key == "k") {
+      } else if (
+        (!event.altKey && event.ctrlKey && event.key === "k") ||
+        (!event.altKey && !event.ctrlKey && event.key === "Tab")
+      ) {
         searchRef?.current?.scrollTo({ behavior: "smooth", top: 0 });
         searchRef?.current?.focus();
         event.preventDefault();
