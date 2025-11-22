@@ -83,7 +83,13 @@ export const Champions = () => {
                     ]}
                     onClick={() => setChampionSelected(c)}
                   >
-                    <img tw="[flex: 0 0 40px]" src={championImgSrc(c.image.full, c.version)} height={40} width={40} />
+                    <img
+                      tw="[flex: 0 0 40px]"
+                      src={championImgSrc(c.image.full, c.version)}
+                      height={40}
+                      width={40}
+                      title={c.name}
+                    />
                     {/* <b tw="text-lg">{c.name}</b> */}
                     {/* <i tw="text-xs">({c.title})</i> - {c.tags.join(", ")} */}
                   </div>
