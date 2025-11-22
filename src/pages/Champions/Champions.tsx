@@ -64,8 +64,8 @@ export const Champions = () => {
                   c && (
                     <li
                       key={c.id}
-                      tw="border rounded-lg p-4 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm"
-                      css={[c.id === championSelected?.id && tw`bg-lol-yellow/40 ring-lol-yellow`]}
+                      tw="rounded-lg p-4 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm"
+                      css={[c.id === championSelected?.id ? tw`bg-lol-yellow/40 ring-lol-yellow` : tw``]}
                       onClick={() => setChampionSelected(c)}
                     >
                       <div tw="grid [grid-template-columns: auto 1fr] gap-3 items-center">

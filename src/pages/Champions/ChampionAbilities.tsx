@@ -30,10 +30,11 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
             tw="flex flex-col mx-auto items-stretch justify-end 
             [column-gap: 2ch] 
             [min-width: 200px] h-full cursor-pointer w-full ring-1 active:ring-lol-yellow ring-white rounded-lg p-4"
-            onPointerDown={() => {
+            onContextMenu={(e) => e.preventDefault()}
+            onPointerDown={(e) => {
               setCounter((prev) => {
                 const newCounter = [...prev];
-                newCounter[spellI] = newCounter[spellI] + 1;
+                newCounter[spellI] = Math.max(newCounter[spellI] + (e.button === 2 ? -1 : 1), 0);
                 return newCounter;
               });
             }}
@@ -53,7 +54,9 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                 </label>
               </div>
               <label tw="text-base font-bold text-end [flex-grow: 1] w-min max-w-fit">{s.name}</label>
-              <span tw="absolute text-xs right-0 top-0">Lvl {(counter[spellI] % s.cooldown.length) + 1}</span>
+              <span tw="absolute text-xs right-0 top-0 text-lol-yellow">
+                Lvl {(counter[spellI] % s.cooldown.length) + 1}
+              </span>
             </div>
 
             <div tw="mt-2.5 grid grid-rows-2 [grid-template-columns: 5ch repeat(auto-fit, minmax(0,1fr))] [gap: 0.5rem] items-center">
@@ -63,7 +66,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                   tw="row-start-1 font-semibold shadow-cm rounded text-center ring-1 ring-white  relative text-sm md:text-base"
                   key={s.id + "-" + i}
                   // {(counter[spellI] % arr.length === i ? {"ring-lol-yellow" : "")}
-                  css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-lol-yellow` : tw``]}
+                  css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-1 ring-lol-yellow` : tw``]}
                 >
                   {c}
                   {c ?
