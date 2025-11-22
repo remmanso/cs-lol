@@ -52,15 +52,16 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                   {spellI < spellsName.length ? spellsName[spellI] : "more spells ?"}
                 </label>
               </div>
-              <label tw="text-base [text-overflow: ellipsis] text-end [flex-grow: 1] w-min max-w-fit ">{s.name}</label>
+              <label tw="text-base font-bold text-end [flex-grow: 1] w-min max-w-fit ">{s.name}</label>
             </div>
 
             <div tw="mt-2.5 grid grid-rows-2 [grid-template-columns: 5ch repeat(auto-fit, minmax(0,1fr))] [gap: 0.5rem] items-center">
               <span tw="row-start-1 text-xs font-light inline-flex flex-wrap">Cool-down:</span>
               {s.cooldown.map((c, i, arr) => (
                 <div
-                  tw="row-start-1 font-semibold rounded text-center ring-1 ring-lol-yellow relative text-sm md:text-base"
+                  tw="row-start-1 font-semibold shadow-cm rounded text-center ring-1 ring-white  relative text-sm md:text-base"
                   key={s.id + "-" + i}
+                  // {(counter[spellI] % arr.length === i ? {"ring-lol-yellow" : "")}
                   style={counter[spellI] % arr.length === i ? { color: "#c28f2c" } : {}}
                 >
                   {c}
@@ -72,7 +73,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
               <span tw="row-start-2 text-xs font-light">Cost:</span>
               {s.cost.map((c, i, arr) => (
                 <div
-                  tw="row-start-2 font-semibold shadow-cm rounded text-center ring-1 ring-lol-yellow text-sm md:text-base"
+                  tw="row-start-2 font-semibold shadow-cm rounded text-center ring-1 ring-white text-sm md:text-base"
                   key={s.id + "-" + i}
                   style={counter[spellI] % arr.length === i ? { color: "#c28f2c" } : {}}
                 >
