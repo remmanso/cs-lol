@@ -64,7 +64,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                 </label>
                 {s.tooltip.includes("<trueDamage>") ?
                   <>
-                    &<span tw="bg-white rounded text-lol-client-bg px-1">True</span>
+                    <span tw="bg-white rounded text-lol-client-bg px-1">True</span>
                   </>
                 : ""}
                 <span tw="text-lol-yellow">Lvl {(counter[spellI] % s.cooldown.length) + 1}</span>
