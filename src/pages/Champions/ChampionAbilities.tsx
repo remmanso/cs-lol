@@ -23,7 +23,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
           justify-around
           place-items-stretch 
           text-sm 
-          touch-none [user-select: none] [-webkit-user-drag: none]
+          [user-select: none] [-webkit-user-drag: none]
         "
       >
         {query.data.data[champ.id].spells.map((s, spellI) => (
