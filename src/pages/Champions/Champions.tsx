@@ -113,7 +113,7 @@ export const Champions = () => {
               c && (
                 <div
                   key={c.id}
-                  tw="flex items-center rounded-lg p-2 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm"
+                  tw="flex items-center rounded-lg p-2 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm transition-all active:shadow-none"
                   css={[
                     c.id === championSelected?.id ? tw`bg-lol-yellow/40 ring-lol-yellow` : tw``,
                     !stringIncludesInsensitive(c.name, searchRef?.current?.value) ?

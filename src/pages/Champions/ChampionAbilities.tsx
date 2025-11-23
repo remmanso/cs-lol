@@ -36,7 +36,8 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
             [flex: 1 1 0]
             [min-width: max-content]
             [max-width: 400px]
-            ring-1 hover:ring-lol-yellow hover:shadow-cm active:shadow-none ring-white rounded-lg 
+            ring-1 hover:ring-lol-yellow hover:shadow-cm active:shadow-none ring-white rounded-lg
+            transition-all 
             cursor-pointer
             "
             onContextMenu={(e) => e.preventDefault()}
@@ -70,12 +71,12 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
               </div>
               <label tw="text-base font-bold text-end [flex-grow: 1] w-min max-w-fit">{s.name}</label>
             </div>
-
-            <div tw="mt-2.5 grid grid-rows-2 grid-cols-[repeat(auto-fit, minmax(0, 1fr))] [gap: 0.5rem] items-center">
+            <div tw="mt-2.5 grid grid-rows-2 grid-cols-[repeat(auto-fit, minmax(0, 1fr))] [gap: 0.5rem] items-center ">
               <div tw="row-start-1 text-xs font-light inline-flex flex-wrap">Cool-Down:</div>
               {s.cooldown.map((c, i, arr) => (
                 <div
-                  tw="row-start-1 font-semibold shadow-cm rounded ring-1 ring-white text-sm text-center  min-w-max "
+                  tw="row-start-1 font-semibold shadow-cm rounded ring-1 ring-white text-sm text-center  min-w-max transition-all
+                  "
                   key={s.id + "-" + i}
                   css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-lol-yellow` : tw``]}
                 >
@@ -86,7 +87,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
               <div tw="row-start-2 text-xs font-light inline-flex flex-wrap">Cost:</div>
               {s.cost.map((c, i, arr) => (
                 <div
-                  tw="row-start-2 font-semibold shadow-cm rounded text-center ring-1 ring-white text-sm"
+                  tw="row-start-2 font-semibold shadow-cm rounded text-center ring-1 ring-white text-sm transition-all"
                   key={s.id + "-" + i}
                   css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-lol-yellow` : tw``]}
                 >
@@ -94,7 +95,6 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                 </div>
               ))}
             </div>
-            {/* <p>{s.description}</p> */}
           </div>
         ))}
       </div>

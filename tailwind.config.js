@@ -22,13 +22,23 @@ module.exports = {
       boxShadow: {
         cm: "0 0 10px 5px #00000073 ",
       },
+      boxShadowColor: {
+        outline: "#000C",
+        gold: "#c28f2c",
+      },
       dropShadow: {
-        outline: [, "-1px -1px 2px #000C", "1px -1px 2px #000C", "-1px 1px 2px #000C", "1px 1px 2px #000C"],
+        outline: ["-1px -1px 2px #000C", "1px -1px 2px #000C", "-1px 1px 2px #000C", "1px 1px 2px #000C"],
         "outline-gold": [
           "-1px -1px 2px #c28f2c22",
           "1px -1px 2px #c28f2c22",
           "-1px 1px 2px #c28f2c22",
           "1px 1px 2px #c28f2c22",
+        ],
+        "outline-gold-xl": [
+          "-5px -5px 5px #c28f2c22",
+          "5px -5px 5px #c28f2c22",
+          "-5px 5px 5px #c28f2c22",
+          "5px 5px 5px #c28f2c22",
         ],
       },
     },
