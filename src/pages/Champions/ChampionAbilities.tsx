@@ -16,22 +16,29 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
   return (
     <Suspense>
       <div
-        tw="grid 
-        [grid-template-columns: repeat(auto-fit, minmax(300px, 400px))] 
-      sm:[grid-template-columns: repeat(auto-fit, minmax(300px, 350px))] 
-      gap-4 
-      justify-center
-      md:gap-4 
-      place-items-stretch text-sm touch-none [user-select: none] [-webkit-user-drag: none]"
+        tw="
+          flex
+          flex-wrap
+          gap-4 
+          justify-around
+          place-items-stretch 
+          text-sm 
+          touch-none [user-select: none] [-webkit-user-drag: none]
+        "
       >
         {query.data.data[champ.id].spells.map((s, spellI) => (
           <div
             key={s.id + champ.id}
-            tw="flex flex-col mx-auto items-stretch justify-end 
+            tw="flex flex-col items-stretch justify-between 
             [column-gap: 2ch] 
-      relative
-
-            [min-width: 200px] h-full cursor-pointer w-full ring-1 active:ring-lol-yellow ring-white rounded-lg p-4 py-6"
+            relative
+            p-4 py-6
+            [flex: 1 1 0]
+            [min-width: max-content]
+            [max-width: 400px]
+            ring-1 active:ring-lol-yellow ring-white rounded-lg 
+            cursor-pointer
+            "
             onContextMenu={(e) => e.preventDefault()}
             onPointerDown={(e) => {
               setCounter((prev) => {
@@ -64,24 +71,22 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
               <label tw="text-base font-bold text-end [flex-grow: 1] w-min max-w-fit">{s.name}</label>
             </div>
 
-            <div tw="mt-2.5 grid grid-rows-2 [grid-template-columns: 5ch repeat(auto-fit, minmax(0,1fr))] [gap: 0.5rem] items-center">
-              <span tw="row-start-1 text-xs font-light inline-flex flex-wrap">Cool-Down:</span>
+            <div tw="mt-2.5 grid grid-rows-2 grid-cols-[repeat(auto-fit, minmax(0, 1fr))] [gap: 0.5rem] items-center">
+              <div tw="row-start-1 text-xs font-light inline-flex flex-wrap">Cool-Down:</div>
               {s.cooldown.map((c, i, arr) => (
                 <div
-                  tw="row-start-1 font-semibold shadow-cm rounded text-center ring-1 ring-white  relative text-sm md:text-base"
+                  tw="row-start-1 font-semibold shadow-cm rounded ring-1 ring-white text-sm text-center  min-w-max "
                   key={s.id + "-" + i}
                   css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-lol-yellow` : tw``]}
                 >
                   {c}
-                  {c ?
-                    <span tw="[font-size: 10px]">s</span>
-                  : ""}
+                  {c && <span tw="[font-size: 10px]">s</span>}
                 </div>
               ))}
-              <span tw="row-start-2 text-xs font-light">Cost:</span>
+              <div tw="row-start-2 text-xs font-light inline-flex flex-wrap">Cost:</div>
               {s.cost.map((c, i, arr) => (
                 <div
-                  tw="row-start-2 font-semibold shadow-cm rounded text-center ring-1 ring-white text-sm md:text-base"
+                  tw="row-start-2 font-semibold shadow-cm rounded text-center ring-1 ring-white text-sm"
                   key={s.id + "-" + i}
                   css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-lol-yellow` : tw``]}
                 >
