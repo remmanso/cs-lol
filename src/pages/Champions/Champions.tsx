@@ -6,6 +6,12 @@ import { Title } from "../../styles/style";
 import { ddChampion } from "../../utils/ddTypes";
 import { ChampionAbilities } from "./ChampionAbilities";
 
+const stringIncludesInsensitive = (src: string, target?: string) =>
+  src
+    ?.toUpperCase()
+    .replace(/[^\w\d]/gi, "")
+    .includes(target?.replace(/[^\w\d]/gi, "").toUpperCase() ?? "");
+
 const championImgSrc = (imgPath: string, patch: string) =>
   `https://ddragon.leagueoflegends.com/cdn/${patch}/img/champion/${imgPath}`;
 
@@ -28,9 +34,7 @@ export const Champions = () => {
   const handleEnter = useCallback(() => {
     if (!searchRef?.current?.value) return;
 
-    const searched = champions.filter((c) =>
-      c.name.toLowerCase().includes(searchRef?.current?.value.toLowerCase() ?? ""),
-    );
+    const searched = champions.filter((c) => stringIncludesInsensitive(c.name, searchRef?.current?.value));
 
     if (searched.length === 1) setChampionSelected(searched[0]);
   }, [champions]);
@@ -49,11 +53,11 @@ export const Champions = () => {
       ) {
         searchRef?.current?.scrollTo({ behavior: "smooth", top: 0 });
         searchRef?.current?.focus();
+        searchRef?.current?.select();
         event.preventDefault();
       }
     };
 
-    // Add event listener when component mounts
     window.addEventListener("keydown", keyHandler);
 
     return () => {
@@ -103,36 +107,31 @@ export const Champions = () => {
           </div>
         : <></>}
 
-        <div tw="col-span-full flex flex-wrap gap-2">
-          {/* <ul tw="grid gap-4"> */}
-          {champions
-            // .filter((c) => c.name.toLowerCase().includes(championSearched.toLowerCase()))
-            .map(
-              (c) =>
-                c && (
-                  <div
-                    key={c.id}
-                    tw="flex items-center rounded-lg p-2 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm"
-                    css={[
-                      c.id === championSelected?.id ? tw`bg-lol-yellow/40 ring-lol-yellow` : tw``,
-                      !c.name.toLowerCase().includes(championSearched.toLowerCase()) ?
-                        tw`opacity-20`
-                      : championSearched.toLowerCase() && tw`bg-lol-yellow`,
-                    ]}
-                    onClick={() => setChampionSelected(c)}
-                  >
-                    <img
-                      tw="[flex: 0 0 40px]"
-                      src={championImgSrc(c.image.full, c.version)}
-                      height={40}
-                      width={40}
-                      title={c.name}
-                    />
-                    {/* <b tw="text-lg">{c.name}</b> */}
-                    {/* <i tw="text-xs">({c.title})</i> - {c.tags.join(", ")} */}
-                  </div>
-                ),
-            )}
+        <div tw="col-span-full grid [grid-template-columns: repeat(auto-fit, minmax(60px, 60px))] justify-center gap-2">
+          {champions.map(
+            (c) =>
+              c && (
+                <div
+                  key={c.id}
+                  tw="flex items-center rounded-lg p-2 ring-1 ring-white/30 hover:bg-lol-yellow/20 cursor-pointer active:bg-lol-yellow/50 shadow-cm"
+                  css={[
+                    c.id === championSelected?.id ? tw`bg-lol-yellow/40 ring-lol-yellow` : tw``,
+                    !stringIncludesInsensitive(c.name, searchRef?.current?.value) ?
+                      tw`opacity-20`
+                    : championSearched && tw`bg-lol-yellow`,
+                  ]}
+                  onClick={() => setChampionSelected(c)}
+                >
+                  <img
+                    tw="[flex: 0 0 40px]"
+                    src={championImgSrc(c.image.full, c.version)}
+                    height={40}
+                    width={40}
+                    title={c.name}
+                  />
+                </div>
+              ),
+          )}
           {/* </ul> */}
         </div>
       </div>

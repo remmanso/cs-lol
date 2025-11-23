@@ -17,9 +17,10 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
     <Suspense>
       <div
         tw="grid 
-        [grid-template-columns: repeat(auto-fit, minmax(150px, 0.5fr) minmax(150px, 0.5fr))] 
-      sm:[grid-template-columns: repeat(auto-fit, minmax(200px, 0.5fr) minmax(200px, 0.5fr))] 
+        [grid-template-columns: repeat(auto-fit, minmax(300px, 400px))] 
+      sm:[grid-template-columns: repeat(auto-fit, minmax(300px, 350px))] 
       gap-4 
+      justify-center
       md:gap-4 
       place-items-stretch text-sm touch-none [user-select: none] [-webkit-user-drag: none]"
       >
@@ -28,7 +29,9 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
             key={s.id + champ.id}
             tw="flex flex-col mx-auto items-stretch justify-end 
             [column-gap: 2ch] 
-            [min-width: 200px] h-full cursor-pointer w-full ring-1 active:ring-lol-yellow ring-white rounded-lg p-4"
+      relative
+
+            [min-width: 200px] h-full cursor-pointer w-full ring-1 active:ring-lol-yellow ring-white rounded-lg p-4 py-6"
             onContextMenu={(e) => e.preventDefault()}
             onPointerDown={(e) => {
               setCounter((prev) => {
@@ -38,6 +41,12 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
               });
             }}
           >
+            <div tw="flex absolute text-xs right-2 top-1 gap-2 font-bold">
+              {s.tooltip.includes("<physicalDamage>") && <span tw=" bg-red-500 rounded px-1">Physical</span>}
+              {s.tooltip.includes("<magicDamage>") && <span tw=" bg-purple-600 rounded px-1 ">Magical</span>}
+              {s.tooltip.includes("<trueDamage>") && <span tw=" bg-white rounded text-black px-1">True</span>}
+              <span tw="text-lol-yellow">Lvl {(counter[spellI] % s.cooldown.length) + 1}</span>
+            </div>
             <div tw="flex justify-between items-end gap-4 relative">
               <div tw="relative [flex: 0 0 45px] pt-1">
                 <img
@@ -53,21 +62,6 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                 </label>
               </div>
               <label tw="text-base font-bold text-end [flex-grow: 1] w-min max-w-fit">{s.name}</label>
-              <div tw="flex absolute text-xs -right-2 -top-3 gap-2 font-bold">
-                <label tw="text-xs font-bold text-end [flex-grow: 0 1 max-content]">
-                  {s.tooltip.includes("<physicalDamage>") ?
-                    <span tw="bg-red-500 rounded px-1">Physical</span>
-                  : s.tooltip.includes("<magicDamage>") ?
-                    <span tw="bg-purple-600 rounded px-1 ">Magical</span>
-                  : ""}
-                </label>
-                {s.tooltip.includes("<trueDamage>") ?
-                  <>
-                    <span tw="bg-white rounded text-lol-client-bg px-1">True</span>
-                  </>
-                : ""}
-                <span tw="text-lol-yellow">Lvl {(counter[spellI] % s.cooldown.length) + 1}</span>
-              </div>
             </div>
 
             <div tw="mt-2.5 grid grid-rows-2 [grid-template-columns: 5ch repeat(auto-fit, minmax(0,1fr))] [gap: 0.5rem] items-center">
@@ -76,8 +70,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                 <div
                   tw="row-start-1 font-semibold shadow-cm rounded text-center ring-1 ring-white  relative text-sm md:text-base"
                   key={s.id + "-" + i}
-                  // {(counter[spellI] % arr.length === i ? {"ring-lol-yellow" : "")}
-                  css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-1 ring-lol-yellow` : tw``]}
+                  css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-lol-yellow` : tw``]}
                 >
                   {c}
                   {c ?
