@@ -36,7 +36,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
             [flex: 1 1 0]
             [min-width: max-content]
             [max-width: 400px]
-            ring-1 active:ring-lol-yellow ring-white rounded-lg 
+            ring-1 hover:ring-lol-yellow hover:shadow-cm active:shadow-none ring-white rounded-lg 
             cursor-pointer
             "
             onContextMenu={(e) => e.preventDefault()}
