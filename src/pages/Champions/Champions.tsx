@@ -29,7 +29,10 @@ export const Champions = () => {
 
     const searched = champions.filter((c) => stringIncludesInsensitive(c.name, searchRef?.current?.value));
 
-    if (searched.length === 1) setChampionSelected(searched[0]);
+    if (searched.length === 1) {
+      setChampionSelected(searched[0]);
+      setChampionSearched("");
+    }
   }, [champions]);
 
   useEffect(() => {
