@@ -95,7 +95,7 @@ export const Slider = ({ setValue }: { setValue?: (val: number) => void }) => {
           tw="relative flex items-center hover:cursor-pointer"
           onPointerDown={(e) => handlePointerDown.current(e.nativeEvent)}
         >
-          <div tw="h-4 w-4 rounded-full border bg-slate-200 drop-shadow-lg hover:bg-slate-400 active:bg-slate-400"></div>
+          <div tw="h-4 w-4 rounded-full border bg-slate-200 drop-shadow-lg can-hover:hover:bg-slate-400 active:bg-slate-400"></div>
         </div>
       </div>
     </div>

@@ -39,3 +39,12 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+export const stringIncludesInsensitive = (src: string, target?: string) =>
+  src
+    ?.toUpperCase()
+    .replace(/[^\w\d]/gi, "")
+    .includes(target?.replace(/[^\w\d]/gi, "").toUpperCase() ?? "");
+
+export const championImgSrc = (imgPath: string, patch: string) =>
+  `https://ddragon.leagueoflegends.com/cdn/${patch}/img/champion/${imgPath}`;

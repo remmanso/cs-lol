@@ -10,7 +10,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
   const [counter, setCounter] = useState<number[]>([]);
 
   useEffect(() => {
-    setCounter([...Array(query.data.data[champ.id].spells.length)].map(() => 0));
+    setCounter([...Array(query.data.data[champ.id].spells.length)].map(() => -1));
   }, [champ.id, query.data]);
 
   return (
@@ -20,7 +20,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
           flex
           flex-wrap
           gap-4 
-          justify-around
+          justify-center
           place-items-stretch 
           text-sm 
           [user-select: none] [-webkit-user-drag: none]
@@ -29,34 +29,34 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
         {query.data.data[champ.id].spells.map((s, spellI) => (
           <div
             key={s.id + champ.id}
-            tw="flex flex-col items-stretch justify-between 
-            [column-gap: 2ch] 
+            tw="
             relative
-            p-4 py-6
-            [flex: 1 1 0]
-            [min-width: max-content]
-            [max-width: 400px]
-            ring-1 hover:ring-lol-yellow hover:shadow-cm active:shadow-none ring-white rounded-lg
-            transition-all 
+            flex-1 [min-width: fit-content] [max-width: 300px]
+            p-3 pt-6
+            ring-1 ring-white rounded-lg
             cursor-pointer
+            can-hover:hover:ring-lol-yellow hover:shadow-cm active:shadow-none
+            transition-all 
+            [transition-duration: 10ms]
+            [transition-timing-function: ease-in-out]
             "
             onContextMenu={(e) => e.preventDefault()}
             onPointerDown={(e) => {
               setCounter((prev) => {
                 const newCounter = [...prev];
-                newCounter[spellI] = Math.max(newCounter[spellI] + (e.button === 2 ? -1 : 1), 0);
+                newCounter[spellI] = Math.max(newCounter[spellI] + (e.button === 2 ? -1 : 1), -1);
                 return newCounter;
               });
             }}
           >
-            <div tw="flex absolute text-xs right-2 top-1 gap-2 font-bold">
-              {s.tooltip.includes("<physicalDamage>") && <span tw=" bg-red-500 rounded px-1">Physical</span>}
-              {s.tooltip.includes("<magicDamage>") && <span tw=" bg-purple-600 rounded px-1 ">Magical</span>}
-              {s.tooltip.includes("<trueDamage>") && <span tw=" bg-white rounded text-black px-1">True</span>}
+            <div tw="inline-flex absolute text-xs right-2 top-1 gap-2 font-bold">
+              {s.tooltip.includes("<physicalDamage>") && <span tw="bg-red-500 rounded px-1">Physical</span>}
+              {s.tooltip.includes("<magicDamage>") && <span tw="bg-purple-600 rounded px-1 ">Magical</span>}
+              {s.tooltip.includes("<trueDamage>") && <span tw="bg-white rounded text-black px-1">True</span>}
               <span tw="text-lol-yellow">Lvl {(counter[spellI] % s.cooldown.length) + 1}</span>
             </div>
-            <div tw="flex justify-between items-end gap-4 relative">
-              <div tw="relative [flex: 0 0 45px] pt-1">
+            <div tw="flex justify-between items-end gap-4">
+              <div tw="relative pt-1">
                 <img
                   src={CHAMPION_IMG_URL(s.image.full, champ.version)}
                   tw="rounded-md justify-self-center place-self-end shadow-cm"
@@ -65,9 +65,11 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                   draggable="false"
                   title={s.description}
                 />
-                <label tw="text-lg absolute left-0.5 bottom-0.5 [line-height: 100%] font-extrabold drop-shadow-outline">
-                  {spellI < spellsName.length ? spellsName[spellI] : "more spells ?"}
-                </label>
+                <span tw="text-lg absolute left-0.5 bottom-0.5 [line-height: 100%] font-extrabold drop-shadow-outline">
+                  {spellI < spellsName.length ?
+                    spellsName[spellI]
+                  : (console.error(`${champ.id} has more than ${spellsName.length} spells.`) ?? "")}
+                </span>
               </div>
               <label tw="text-base font-bold text-end [flex-grow: 1] w-min max-w-fit">{s.name}</label>
             </div>
@@ -89,7 +91,7 @@ export const ChampionAbilities = ({ champ }: { champ: ddChampion }) => {
                 <div
                   tw="row-start-2 font-semibold shadow-cm rounded text-center ring-1 ring-white text-sm transition-all"
                   key={s.id + "-" + i}
-                  css={[counter[spellI] % arr.length === i ? tw`text-lol-yellow ring-lol-yellow` : tw``]}
+                  css={[counter[spellI] % arr.length === i && tw`text-lol-yellow ring-lol-yellow`]}
                 >
                   {c}
                 </div>
