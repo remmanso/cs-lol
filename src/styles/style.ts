@@ -33,8 +33,8 @@ export const Navbar = styled.div(() => [
       }
       50% {
         color: #c28f2c;
-        filter: drop-shadow(-1px -1px 1px #c2902c33) drop-shadow(1px -1px 1px #c2902c33)
-          drop-shadow(-1px 1px 1px #c2902c33) drop-shadow(1px 1px 1px #c2902c33);
+        filter: drop-shadow(-1px -1px 1px #c2902c44) drop-shadow(1px -1px 1px #c2902c44)
+          drop-shadow(-1px 1px 1px #c2902c44) drop-shadow(1px 1px 1px #c2902c44);
       }
       100% {
         color: #c28f2c;
@@ -66,7 +66,7 @@ export const Navbar = styled.div(() => [
 
     &::before {
       content: "";
-      background: linear-gradient(45deg, #00000000, #c2902c33, #00000000);
+      background: linear-gradient(45deg, #00000000, #c2902c44, #00000000);
       background-size: 200% 200%;
       inset: -2px;
       border-radius: inherit;

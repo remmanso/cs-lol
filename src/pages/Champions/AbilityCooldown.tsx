@@ -6,38 +6,55 @@ export const AbilityCooldown = ({ cooldown }: { cooldown: number }) => {
   const { cdr } = useContext(ChampionContext);
   const ref = useRef<HTMLSpanElement>(null);
   const src = useRef<HTMLSpanElement>(null);
+  // const [isPending, setTransition] = useTransition();
 
   useEffect(() => {
     const cdReduced = ref.current;
     const cooldown = src.current;
+    let timeOutId: NodeJS.Timeout | null = null;
+    const animations: Animation[] = [];
     if (!cdReduced || cdr === 1 || !cooldown) return;
 
-    cdReduced.animate(
-      [
-        { transform: "translateY(0px)", opacity: 1 },
-        { transform: "translateY(-20px)" },
-        { transform: "translateY(-40px)", oppacity: 0 },
-      ],
-      {
-        duration: 3500,
-        fill: "forwards",
-        delay: 100,
-        easing: "ease-out",
-      },
-    );
+    const animation = requestAnimationFrame(() => {
+      timeOutId = setTimeout(() => {
+        animations.push(
+          cdReduced.animate(
+            [
+              { transform: "translateY(0px)", opacity: 1 },
+              { transform: "translateY(-20px)" },
+              { transform: "translateY(-40px)", oppacity: 0 },
+            ],
+            {
+              duration: 3500,
+              fill: "forwards",
+              easing: "ease-out",
+              id: "cdReduce",
+            },
+          ),
+        );
 
-    cooldown.animate(
-      [
-        { transform: "translate(2px, -2px) rotate(-5deg)", opacity: 1 },
-        { transform: "translate(-2px, 2px) rotate(5deg)", opacity: 0.6 },
-        { transform: "translate(2px, -2px) rotate(-5deg)", opacity: 0 },
-      ],
-      {
-        duration: 300,
-        delay: 50,
-        easing: "ease-out",
-      },
-    );
+        animations.push(
+          cooldown.animate(
+            [
+              { transform: "translate(2px, -2px) rotate(-5deg)", opacity: 1 },
+              { transform: "translate(-2px, 2px) rotate(5deg)", opacity: 0.6 },
+              { transform: "translate(2px, -2px) rotate(-5deg)", opacity: 0 },
+            ],
+            {
+              duration: 200,
+              easing: "ease-out",
+            },
+          ),
+        );
+      }, 100);
+    });
+
+    return () => {
+      if (timeOutId) clearTimeout(timeOutId);
+      animations.forEach((o) => o.cancel());
+      animations.splice(0, animations.length);
+      cancelAnimationFrame(animation);
+    };
   }, [cdr]);
 
   return (
@@ -51,7 +68,7 @@ export const AbilityCooldown = ({ cooldown }: { cooldown: number }) => {
       <span tw="relative">
         {Math.round(cooldown * cdr * 10) / 10}
         {cooldown && <span tw="[font-size: 10px]">s</span>}
-        <span tw=" opacity-0 absolute inset-0 text-red-500" ref={src}>
+        <span tw=" opacity-0 absolute inset-0 text-red-500 font-bold" ref={src}>
           {Math.round(cooldown * cdr * 10) / 10}
           {cooldown && <span tw="[font-size: 10px]">s</span>}
         </span>

@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import tw from "twin.macro";
 import SvgIcon from "../../components/SvgIcon";
 import { useChampionsQuery } from "../../hooks/useDDragon";
