@@ -13,6 +13,8 @@ export const Champions = () => {
   const [championSearched, setChampionSearched] = useState<string>("");
   const [championSelected, setChampionSelected] = useState<ddChampion | null>(null);
   const { champions: championsData, lastVersion } = useChampionsQuery();
+  const [haste, setHaste] = useState(0);
+
   const searchRef = useRef<HTMLInputElement>(null);
   const champions = useMemo(() => {
     const cData = championsData.data?.data;
@@ -34,6 +36,12 @@ export const Champions = () => {
       setChampionSearched("");
     }
   }, [champions]);
+
+  const handleHaste = (value: string | number | undefined) => {
+    const sanitizedValue = typeof value === "string" ? Number(value?.replace(/[^\d]/g, "")) : value;
+
+    setHaste(Math.min(Math.max(0, sanitizedValue ?? 0), 1000));
+  };
 
   useEffect(() => {
     const keyHandler = (event: KeyboardEvent) => {
@@ -68,6 +76,7 @@ export const Champions = () => {
         championSelected: championSelected,
         searchRef: searchRef,
         setChampionSelected: setChampionSelected,
+        cdr: 100 / (haste + 100),
       }}
     >
       <div tw="rounded-lg px-8">
@@ -104,15 +113,40 @@ export const Champions = () => {
           </div>
           {championSelected && (
             <div tw="col-span-2">
-              <div tw="flex flex-row py-4 gap-4 rounded-lg items-end">
-                <img
-                  tw="[flex: 0 0 60px] [aspect-ratio: 1 / 1]"
-                  src={championImgSrc(championSelected.image.full, championSelected.version)}
-                  height={40}
-                  width={40}
-                />
-                <Title tw="text-2xl p-0 m-0">{championSelected.name}</Title>
-                <span tw="text-sm p-0 m-0 mb-0.5">{championSelected.tags.join(", ")}</span>
+              <div tw="grid [grid-template-columns: 1fr auto] py-4 gap-4 rounded-lg items-end">
+                <div tw="inline-flex items-end gap-4">
+                  <img
+                    tw="[flex: 0 0 60px] [aspect-ratio: 1 / 1]"
+                    src={championImgSrc(championSelected.image.full, championSelected.version)}
+                    height={40}
+                    width={40}
+                  />
+                  <Title tw="text-2xl p-0 m-0">{championSelected.name}</Title>
+                  <span tw="text-sm p-0 m-0 mb-0.5">{championSelected.tags.join(", ")}</span>
+                </div>
+                <div tw="inline-flex justify-end gap-4 items-center">
+                  <span tw="inline-flex items-baseline gap-2">
+                    <img
+                      src="/cdr-icon.png"
+                      tw="flex-none  rounded  [aspect-ratio: 1 / 1] [max-height: 12px] drop-shadow-outline-gold-xl"
+                    />
+                    <label htmlFor="cdr-field" tw="text-lol-yellow text-lg font-semibold">
+                      Haste :
+                    </label>
+                  </span>
+                  <input
+                    id="cdr-field"
+                    type="text"
+                    tw="justify-self-end text-lol-client-bg p-1 font-bold text-base outline-lol-client-bg rounded-md relative px-2 focus:outline-lol-yellow capitalize [width: 6ch] text-end"
+                    value={haste}
+                    pattern="/\d\g"
+                    onChange={(e) => handleHaste(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowUp") handleHaste(Number(e.currentTarget?.value ?? 0) + 10);
+                      else if (e.key === "ArrowDown") handleHaste(Number(e.currentTarget?.value ?? 0) - 10);
+                    }}
+                  />
+                </div>
               </div>
               <ChampionAbilities champ={championSelected}></ChampionAbilities>
             </div>
